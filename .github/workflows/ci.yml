@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run test:unit
+
+      # TDD 7.4: Playwright e2e Electron'ni haqiqiy paketlangan holatda ishga
+      # tushirishni talab qiladi (xvfb + native modul ABI'siga bog'liq) -
+      # CI'da barqarorlik uchun hozircha faqat qo'lda/reliz oldidan ishga
+      # tushiriladi, avtomatik pipeline'ga kiritilmagan.

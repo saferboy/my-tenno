@@ -1,0 +1,12 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#0a0d14"/>
+  <polygon
+    points="200,60 964,60 964,824 824,964 60,964 60,200"
+    fill="#10141d"
+    stroke="#d4af6a"
+    stroke-width="26"
+    stroke-linejoin="miter"
+  />
+  <rect x="302" y="340" width="420" height="112" fill="#d4af6a"/>
+  <rect x="457" y="452" width="110" height="378" fill="#d4af6a"/>
+</svg>
