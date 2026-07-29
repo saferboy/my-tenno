@@ -4,7 +4,17 @@ import { closeDb, getDb, getDbPath } from '../db'
 import { createBackup, listBackups, restoreBackup } from '../db/backup'
 import { getAllItemStatuses, upsertItemStatus } from '../db/itemStatus'
 import { getAllMissionStatuses, setMissionCompleted } from '../db/missionStatus'
-import type { ItemStatusPatch } from '../db/types'
+import { getAllChallenges, addChallenge, setChallengeCompleted, deleteChallenge } from '../db/nightwaveChallenge'
+import { getAllRivenMods, addRivenMod, updateRivenMod, deleteRivenMod } from '../db/rivenMod'
+import { getAllCompanionStatuses, setDnaStability } from '../db/companionStatus'
+import { getAllFocusSchools, updateFocusSchool } from '../db/focusSchool'
+import type {
+  ItemStatusPatch,
+  NightwaveChallengeInput,
+  RivenModInput,
+  RivenModPatch,
+  FocusSchoolPatch
+} from '../db/types'
 import { logError } from '../logger'
 import { getMasterData } from '../masterData'
 import { getNodes } from '../masterData/nodes'
@@ -60,6 +70,57 @@ export function registerIpcHandlers(): void {
     return setMissionCompleted(nodeUniqueName, completed)
   })
 
+  // TDD 5.4: Nightwave & Daily/Weekly Tracker.
+  handle('nightwave:getAll', () => {
+    return getAllChallenges()
+  })
+
+  handle('nightwave:add', (_event, input: NightwaveChallengeInput) => {
+    return addChallenge(input)
+  })
+
+  handle('nightwave:setCompleted', (_event, id: number, completed: boolean) => {
+    return setChallengeCompleted(id, completed)
+  })
+
+  handle('nightwave:delete', (_event, id: number) => {
+    deleteChallenge(id)
+  })
+
+  // TDD 5.5: Riven Mod Tracker.
+  handle('riven:getAll', () => {
+    return getAllRivenMods()
+  })
+
+  handle('riven:add', (_event, input: RivenModInput) => {
+    return addRivenMod(input)
+  })
+
+  handle('riven:update', (_event, id: number, patch: RivenModPatch) => {
+    return updateRivenMod(id, patch)
+  })
+
+  handle('riven:delete', (_event, id: number) => {
+    deleteRivenMod(id)
+  })
+
+  // TDD 5.6: Companion & Focus Tracker.
+  handle('companionStatus:getAll', () => {
+    return getAllCompanionStatuses()
+  })
+
+  handle('companionStatus:setDnaStability', (_event, itemUniqueName: string, dnaStability: number | null) => {
+    return setDnaStability(itemUniqueName, dnaStability)
+  })
+
+  handle('focusSchool:getAll', () => {
+    return getAllFocusSchools()
+  })
+
+  handle('focusSchool:update', (_event, schoolName: string, patch: FocusSchoolPatch) => {
+    return updateFocusSchool(schoolName, patch)
+  })
+
   // TDD 7.2: Export Backup / Restore from Backup.
   handle('backup:create', () => {
     return createBackup(getDb(), getDbPath())
@@ -80,7 +141,11 @@ export function registerIpcHandlers(): void {
     const payload = {
       exportedAt: new Date().toISOString(),
       itemStatuses: db.prepare('SELECT * FROM item_status').all(),
-      missionStatuses: db.prepare('SELECT * FROM mission_status').all()
+      missionStatuses: db.prepare('SELECT * FROM mission_status').all(),
+      nightwaveChallenges: db.prepare('SELECT * FROM nightwave_challenge').all(),
+      rivenMods: db.prepare('SELECT * FROM riven_mod').all(),
+      companionStatuses: db.prepare('SELECT * FROM companion_status').all(),
+      focusSchools: db.prepare('SELECT * FROM focus_school').all()
     }
 
     const result = await dialog.showSaveDialog({

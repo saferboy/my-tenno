@@ -1,6 +1,9 @@
 import type Database from 'better-sqlite3'
 import migration001 from './migrations/001_init.sql?raw'
 import migration002 from './migrations/002_mission_status.sql?raw'
+import migration003 from './migrations/003_nightwave.sql?raw'
+import migration004 from './migrations/004_riven.sql?raw'
+import migration005 from './migrations/005_companion_focus.sql?raw'
 import { createBackup } from './backup'
 
 interface Migration {
@@ -11,7 +14,10 @@ interface Migration {
 // TDD 4.2.1: raqamlangan migratsiya skriptlari, versiya bo'yicha ketma-ket qo'llanadi.
 const migrations: Migration[] = [
   { version: 1, sql: migration001 },
-  { version: 2, sql: migration002 }
+  { version: 2, sql: migration002 },
+  { version: 3, sql: migration003 },
+  { version: 4, sql: migration004 },
+  { version: 5, sql: migration005 }
 ]
 
 function getCurrentVersion(db: Database.Database): number {

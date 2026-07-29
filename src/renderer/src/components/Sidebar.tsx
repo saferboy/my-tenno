@@ -1,4 +1,4 @@
-export type View = 'dashboard' | 'arsenal' | 'missions' | 'settings'
+export type View = 'dashboard' | 'arsenal' | 'missions' | 'nightwave' | 'riven' | 'companion' | 'settings'
 
 interface SidebarProps {
   active: View
@@ -9,6 +9,9 @@ const NAV_ITEMS: { view: View; label: string }[] = [
   { view: 'dashboard', label: 'Dashboard' },
   { view: 'arsenal', label: 'Arsenal' },
   { view: 'missions', label: 'Missiyalar' },
+  { view: 'nightwave', label: 'Nightwave' },
+  { view: 'riven', label: 'Rivenlar' },
+  { view: 'companion', label: 'Companion' },
   { view: 'settings', label: 'Sozlamalar' }
 ]
 

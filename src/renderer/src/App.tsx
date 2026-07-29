@@ -4,12 +4,18 @@ import Sidebar, { type View } from './components/Sidebar'
 import Dashboard from './views/Dashboard'
 import Arsenal from './views/Arsenal'
 import MissionTracker from './views/MissionTracker'
+import NightwaveTracker from './views/NightwaveTracker'
+import RivenTracker from './views/RivenTracker'
+import CompanionFocus from './views/CompanionFocus'
 import Settings from './views/Settings'
 
 const VIEWS: Record<View, () => React.JSX.Element> = {
   dashboard: Dashboard,
   arsenal: Arsenal,
   missions: MissionTracker,
+  nightwave: NightwaveTracker,
+  riven: RivenTracker,
+  companion: CompanionFocus,
   settings: Settings
 }
 

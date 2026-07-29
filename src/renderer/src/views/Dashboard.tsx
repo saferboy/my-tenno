@@ -1,16 +1,6 @@
 import { useMemo } from 'react'
 import { useAppStore } from '../store/useAppStore'
-
-// TDD 5.1: "Max qilingan qurollar" statistikasi shu kategoriyalar bo'yicha hisoblanadi.
-const WEAPON_CATEGORIES = new Set([
-  'Primary',
-  'Secondary',
-  'Melee',
-  'Archwing',
-  'Arch-Gun',
-  'Arch-Melee',
-  'SentinelWeapons'
-])
+import { WEAPON_CATEGORIES } from '../constants'
 
 function StatCard({ label, value }: { label: string; value: string }): React.JSX.Element {
   return (
