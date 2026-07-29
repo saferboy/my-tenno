@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { WarframeItem } from '../../../main/masterData/types'
 import type { ItemStatus } from '../../../main/db/types'
+import { useItemImage } from '../hooks/useItemImage'
 
 interface ItemCardProps {
   item: WarframeItem
@@ -19,6 +20,7 @@ function borderColor(status: ItemStatus | undefined): string {
 function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
   const wasMaxed = useRef(Boolean(status?.maxed))
   const [pulse, setPulse] = useState(false)
+  const imageSrc = useItemImage(item.imageName)
 
   // TDD 6.4: Qurol "Max" qilinganda ramka oqdan oltin rangga o'tib, yengil
   // pulse effekti beradi - faqat holat aynan shu zumda o'zgarganda ishga
@@ -50,6 +52,15 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
         status?.sold ? 'opacity-50' : ''
       }`}
     >
+      <div className="flex flex-1 items-center justify-center overflow-hidden py-1">
+        {imageSrc ? (
+          <img src={imageSrc} alt={item.name} draggable={false} className="max-h-16 max-w-full object-contain" />
+        ) : (
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--orokin-border)] text-lg font-bold text-[var(--orokin-text-dim)]">
+            {item.name.charAt(0)}
+          </div>
+        )}
+      </div>
       <div>
         <p className={`text-sm font-semibold ${status?.sold ? 'line-through' : ''}`}>{item.name}</p>
         <p className="text-xs text-[var(--orokin-text-dim)]">{item.category}</p>

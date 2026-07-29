@@ -28,6 +28,8 @@ const api = {
     ipcRenderer.invoke('itemStatus:update', itemUniqueName, patch),
 
   getNodes: (): Promise<MissionNode[]> => ipcRenderer.invoke('masterData:getNodes'),
+  getItemImage: (imageName: string): Promise<string | null> =>
+    ipcRenderer.invoke('masterData:getItemImage', imageName),
   getMissionStatuses: (): Promise<MissionStatus[]> => ipcRenderer.invoke('missionStatus:getAll'),
   updateMissionStatus: (nodeUniqueName: string, completed: boolean): Promise<MissionStatus> =>
     ipcRenderer.invoke('missionStatus:update', nodeUniqueName, completed),

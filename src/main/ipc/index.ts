@@ -16,6 +16,7 @@ import type {
   FocusSchoolPatch
 } from '../db/types'
 import { logError } from '../logger'
+import { getItemImage } from '../imageCache'
 import { getMasterData } from '../masterData'
 import { getNodes } from '../masterData/nodes'
 import { toggleOverlay } from '../overlayWindow'
@@ -49,6 +50,10 @@ export function registerIpcHandlers(): void {
 
   handle('masterData:getNodes', () => {
     return getNodes()
+  })
+
+  handle('masterData:getItemImage', (_event, imageName: string) => {
+    return getItemImage(imageName)
   })
 
   handle('db:getSchemaVersion', () => {

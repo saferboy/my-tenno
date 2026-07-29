@@ -72,9 +72,11 @@ app.whenReady().then(() => {
   // skript/style, unsafe-inline/unsafe-eval yo'q. Dev rejimida Vite HMR va
   // React Refresh ichki (inline) skript qo'shgani uchun unsafe-inline/eval
   // faqat is.dev bo'lganda yumshatiladi - production build'da qo'llanmaydi.
+  // img-src'ga 'data:' qo'shilgan - qurol rasmlari main process'da CDN'dan
+  // yuklanib, base64 data URI sifatida uzatiladi (masterData/imageCache.ts).
   const csp = is.dev
-    ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"
-    : "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+    ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    : "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({

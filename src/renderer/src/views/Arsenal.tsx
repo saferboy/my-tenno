@@ -7,7 +7,7 @@ import ItemDrawer from '../components/ItemDrawer'
 import type { WarframeItem } from '../../../main/masterData/types'
 
 const CARD_MIN_WIDTH = 160
-const CARD_HEIGHT = 96
+const CARD_HEIGHT = 168
 const GAP = 12
 
 // TDD 5.2: 1000+ elementni bir vaqtda DOM'ga chiqarmaslik uchun row-bazaviy
