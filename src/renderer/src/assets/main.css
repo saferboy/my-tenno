@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+/* TDD 6.1: neon-qora Orokin palitrasi */
+:root {
+  --orokin-bg: #0a0d14;
+  --orokin-panel: #10141d;
+  --orokin-border: #232a3a;
+  --orokin-gold: #d4af6a;
+  --orokin-cyan: #4fd8e8;
+  --orokin-text: #d8e0ea;
+  --orokin-text-dim: #7c8798;
+}
+
+body {
+  margin: 0;
+  background-color: var(--orokin-bg);
+  color: var(--orokin-text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  user-select: none;
+}
+
+/* TDD 6.2: burchaklari kesilgan (chamfered) kartalar uchun umumiy shakl */
+.chamfer {
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
