@@ -24,6 +24,12 @@ body {
   user-select: none;
 }
 
+/* TDD 5.7: Mini Overlay - shaffof, frameless oyna uchun fon butunlay yo'q
+   bo'lishi kerak (asosiy #root/body fon rangi ustidan chiqib qolmasligi uchun). */
+body.overlay-mode {
+  background-color: transparent;
+}
+
 /* TDD 6.2: burchaklari kesilgan (chamfered) kartalar uchun umumiy shakl */
 .chamfer {
   clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);

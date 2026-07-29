@@ -18,6 +18,9 @@ import type {
 import { logError } from '../logger'
 import { getMasterData } from '../masterData'
 import { getNodes } from '../masterData/nodes'
+import { toggleOverlay } from '../overlayWindow'
+import { encodeShareCode, decodeShareCode, type SharePayload } from '../shareCode'
+import { downloadUpdate, installUpdate } from '../updater'
 
 // TDD 7.3: har bir handler xatoni lokal log fayliga yozadi, so'ng renderer
 // promise'i rad etilishi (reject) uchun qayta uloqtiradi - "qotib qolish"
@@ -119,6 +122,35 @@ export function registerIpcHandlers(): void {
 
   handle('focusSchool:update', (_event, schoolName: string, patch: FocusSchoolPatch) => {
     return updateFocusSchool(schoolName, patch)
+  })
+
+  // TDD 5.7: Mini Overlay oynasini yoqish/o'chirish.
+  handle('overlay:toggle', () => {
+    return toggleOverlay()
+  })
+
+  // TDD 5.8: Profile Export/Import - Share Code.
+  handle('shareCode:generate', () => {
+    const db = getDb()
+    const payload: SharePayload = {
+      exportedAt: new Date().toISOString(),
+      itemStatuses: db.prepare('SELECT * FROM item_status').all(),
+      missionStatuses: db.prepare('SELECT * FROM mission_status').all()
+    }
+    return encodeShareCode(payload)
+  })
+
+  handle('shareCode:parse', (_event, code: string) => {
+    return decodeShareCode(code)
+  })
+
+  // TDD 8: foydalanuvchi tasdiqlagandan keyin yangilanishni yuklab o'rnatish.
+  handle('updater:download', () => {
+    return downloadUpdate()
+  })
+
+  handle('updater:install', () => {
+    installUpdate()
   })
 
   // TDD 7.2: Export Backup / Restore from Backup.

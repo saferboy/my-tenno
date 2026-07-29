@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion, type Variants } from 'framer-motion'
 import { useAppStore } from './store/useAppStore'
 import Sidebar, { type View } from './components/Sidebar'
 import Dashboard from './views/Dashboard'
@@ -8,6 +9,19 @@ import NightwaveTracker from './views/NightwaveTracker'
 import RivenTracker from './views/RivenTracker'
 import CompanionFocus from './views/CompanionFocus'
 import Settings from './views/Settings'
+
+// TDD 6.4: sahifa o'zgarganda elementlar biroz "glitch" bo'lib paydo bo'ladi.
+const glitchVariants: Variants = {
+  initial: { opacity: 0, x: -6, skewX: -2, filter: 'hue-rotate(20deg)' },
+  animate: {
+    opacity: 1,
+    x: 0,
+    skewX: 0,
+    filter: 'hue-rotate(0deg)',
+    transition: { duration: 0.25, ease: 'easeOut' }
+  },
+  exit: { opacity: 0, x: 6, skewX: 2, transition: { duration: 0.15 } }
+}
 
 const VIEWS: Record<View, () => React.JSX.Element> = {
   dashboard: Dashboard,
@@ -50,7 +64,18 @@ function App(): React.JSX.Element {
   return (
     <div className="flex min-h-screen">
       <Sidebar active={view} onNavigate={setView} />
-      <ActiveView />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={view}
+          variants={glitchVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="flex flex-1"
+        >
+          <ActiveView />
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }

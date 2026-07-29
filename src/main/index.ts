@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './ipc'
 import { closeDb } from './db'
 import { logError } from './logger'
+import { initAutoUpdater } from './updater'
 
 // AppData/Roaming/TennoLog/ ostida saqlash uchun (TDD 4.2) - npm paket nomidan
 // mustaqil, dev va build rejimlarida bir xil papka ishlatilishi uchun aniq
@@ -16,7 +17,7 @@ app.setName('TennoLog')
 process.on('uncaughtException', (error) => logError('uncaughtException', error))
 process.on('unhandledRejection', (error) => logError('unhandledRejection', error))
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -49,6 +50,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -84,7 +87,13 @@ app.whenReady().then(() => {
 
   registerIpcHandlers()
 
-  createWindow()
+  const mainWindow = createWindow()
+
+  // TDD 8: auto-update tekshiruvi faqat production build'da, dev'da
+  // update-server/paketlangan artefakt bo'lmagani uchun o'chirilgan.
+  if (!is.dev) {
+    initAutoUpdater(mainWindow)
+  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

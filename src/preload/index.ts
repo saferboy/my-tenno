@@ -15,6 +15,8 @@ import type {
   FocusSchoolPatch
 } from '../main/db/types'
 import type { BackupInfo } from '../main/db/backup'
+import type { SharePayload } from '../main/shareCode'
+import type { UpdaterEvent } from '../main/updater'
 
 // TDD 7.1: faqat oldindan belgilangan, cheklangan metodlar ochiladi - to'liq
 // ipcRenderer obyekti hech qachon renderer'ga uzatilmaydi.
@@ -50,6 +52,21 @@ const api = {
   getFocusSchools: (): Promise<FocusSchool[]> => ipcRenderer.invoke('focusSchool:getAll'),
   updateFocusSchool: (schoolName: string, patch: FocusSchoolPatch): Promise<FocusSchool> =>
     ipcRenderer.invoke('focusSchool:update', schoolName, patch),
+
+  toggleOverlay: (): Promise<boolean> => ipcRenderer.invoke('overlay:toggle'),
+
+  // TDD 7.1: to'liq ipcRenderer o'rniga faqat "updater:event" kanaliga xos,
+  // cheklangan obuna funksiyasi ochiladi.
+  onUpdaterEvent: (callback: (event: UpdaterEvent) => void): (() => void) => {
+    const listener = (_event: unknown, data: UpdaterEvent): void => callback(data)
+    ipcRenderer.on('updater:event', listener)
+    return () => ipcRenderer.removeListener('updater:event', listener)
+  },
+  downloadUpdate: (): Promise<void> => ipcRenderer.invoke('updater:download'),
+  installUpdate: (): Promise<void> => ipcRenderer.invoke('updater:install'),
+
+  generateShareCode: (): Promise<string> => ipcRenderer.invoke('shareCode:generate'),
+  parseShareCode: (code: string): Promise<SharePayload> => ipcRenderer.invoke('shareCode:parse', code),
 
   createBackup: (): Promise<BackupInfo | null> => ipcRenderer.invoke('backup:create'),
   listBackups: (): Promise<BackupInfo[]> => ipcRenderer.invoke('backup:list'),
