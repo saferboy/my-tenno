@@ -4,11 +4,17 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './ipc'
 import { closeDb } from './db'
+import { logError } from './logger'
 
 // AppData/Roaming/TennoLog/ ostida saqlash uchun (TDD 4.2) - npm paket nomidan
 // mustaqil, dev va build rejimlarida bir xil papka ishlatilishi uchun aniq
 // belgilanadi.
 app.setName('TennoLog')
+
+// TDD 7.3: kutilmagan xatolar ilovani "qotirmasligi" kerak - shu yerda
+// ushlanib, lokal log fayliga yoziladi.
+process.on('uncaughtException', (error) => logError('uncaughtException', error))
+process.on('unhandledRejection', (error) => logError('unhandledRejection', error))
 
 function createWindow(): void {
   // Create the browser window.

@@ -1,4 +1,4 @@
-export type View = 'dashboard' | 'arsenal'
+export type View = 'dashboard' | 'arsenal' | 'missions' | 'settings'
 
 interface SidebarProps {
   active: View
@@ -7,7 +7,9 @@ interface SidebarProps {
 
 const NAV_ITEMS: { view: View; label: string }[] = [
   { view: 'dashboard', label: 'Dashboard' },
-  { view: 'arsenal', label: 'Arsenal' }
+  { view: 'arsenal', label: 'Arsenal' },
+  { view: 'missions', label: 'Missiyalar' },
+  { view: 'settings', label: 'Sozlamalar' }
 ]
 
 function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {

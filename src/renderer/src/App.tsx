@@ -3,6 +3,15 @@ import { useAppStore } from './store/useAppStore'
 import Sidebar, { type View } from './components/Sidebar'
 import Dashboard from './views/Dashboard'
 import Arsenal from './views/Arsenal'
+import MissionTracker from './views/MissionTracker'
+import Settings from './views/Settings'
+
+const VIEWS: Record<View, () => React.JSX.Element> = {
+  dashboard: Dashboard,
+  arsenal: Arsenal,
+  missions: MissionTracker,
+  settings: Settings
+}
 
 function App(): React.JSX.Element {
   const [view, setView] = useState<View>('dashboard')
@@ -30,10 +39,12 @@ function App(): React.JSX.Element {
     )
   }
 
+  const ActiveView = VIEWS[view]
+
   return (
     <div className="flex min-h-screen">
       <Sidebar active={view} onNavigate={setView} />
-      {view === 'dashboard' ? <Dashboard /> : <Arsenal />}
+      <ActiveView />
     </div>
   )
 }

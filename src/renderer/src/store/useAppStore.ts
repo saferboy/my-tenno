@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import Fuse from 'fuse.js'
 import type { WarframeItem } from '../../../main/masterData/types'
 import type { ItemStatus, ItemStatusPatch } from '../../../main/db/types'
+import { useToastStore } from './useToastStore'
 
 export type StatusFilter = 'all' | 'owned' | 'maxed' | 'not-owned'
 
@@ -73,9 +74,13 @@ export const useAppStore = create<AppState>((set) => ({
   setStatusFilter: (status) => set({ statusFilter: status }),
 
   updateStatus: async (itemUniqueName, patch) => {
-    const updated = await window.api.updateItemStatus(itemUniqueName, patch)
-    set((state) => ({
-      statusByItem: { ...state.statusByItem, [itemUniqueName]: updated }
-    }))
+    try {
+      const updated = await window.api.updateItemStatus(itemUniqueName, patch)
+      set((state) => ({
+        statusByItem: { ...state.statusByItem, [itemUniqueName]: updated }
+      }))
+    } catch (error) {
+      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+    }
   }
 }))

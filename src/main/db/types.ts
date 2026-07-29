@@ -15,3 +15,9 @@ export interface ItemStatusPatch {
   rank?: number | null
   notes?: string | null
 }
+
+export interface MissionStatus {
+  nodeUniqueName: string
+  completed: boolean
+  updatedAt: string
+}
