@@ -15,7 +15,10 @@ import type {
   FocusSchoolPatch,
   UserProfile,
   UserProfilePatch,
-  QuestStatus
+  QuestStatus,
+  WishlistItem,
+  WishlistItemInput,
+  WishlistItemPatch
 } from '../main/db/types'
 import type { BackupInfo } from '../main/db/backup'
 import type { SharePayload } from '../main/shareCode'
@@ -57,6 +60,12 @@ const api = {
   getFocusSchools: (): Promise<FocusSchool[]> => ipcRenderer.invoke('focusSchool:getAll'),
   updateFocusSchool: (schoolName: string, patch: FocusSchoolPatch): Promise<FocusSchool> =>
     ipcRenderer.invoke('focusSchool:update', schoolName, patch),
+
+  getWishlistItems: (): Promise<WishlistItem[]> => ipcRenderer.invoke('wishlist:getAll'),
+  addWishlistItem: (input: WishlistItemInput): Promise<WishlistItem> => ipcRenderer.invoke('wishlist:add', input),
+  updateWishlistItem: (id: number, patch: WishlistItemPatch): Promise<WishlistItem> =>
+    ipcRenderer.invoke('wishlist:update', id, patch),
+  deleteWishlistItem: (id: number): Promise<void> => ipcRenderer.invoke('wishlist:delete', id),
 
   getQuestStatuses: (): Promise<QuestStatus[]> => ipcRenderer.invoke('questStatus:getAll'),
   updateQuestStatus: (questUniqueName: string, completed: boolean): Promise<QuestStatus> =>

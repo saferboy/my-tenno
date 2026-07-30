@@ -96,3 +96,22 @@ export interface QuestStatus {
   completed: boolean
   updatedAt: string
 }
+
+export interface WishlistItem {
+  id: number
+  itemUniqueName: string | null
+  itemName: string
+  notes: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface WishlistItemInput {
+  itemUniqueName: string | null
+  itemName: string
+  notes: string | null
+}
+
+export interface WishlistItemPatch {
+  notes?: string | null
+}

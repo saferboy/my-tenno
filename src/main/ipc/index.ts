@@ -10,13 +10,16 @@ import { getAllCompanionStatuses, setDnaStability } from '../db/companionStatus'
 import { getAllFocusSchools, updateFocusSchool } from '../db/focusSchool'
 import { getUserProfile, updateUserProfile } from '../db/userProfile'
 import { getAllQuestStatuses, setQuestCompleted } from '../db/questStatus'
+import { getAllWishlistItems, addWishlistItem, updateWishlistItem, deleteWishlistItem } from '../db/wishlistItem'
 import type {
   ItemStatusPatch,
   NightwaveChallengeInput,
   RivenModInput,
   RivenModPatch,
   FocusSchoolPatch,
-  UserProfilePatch
+  UserProfilePatch,
+  WishlistItemInput,
+  WishlistItemPatch
 } from '../db/types'
 import { logError } from '../logger'
 import { getItemImage } from '../imageCache'
@@ -132,6 +135,23 @@ export function registerIpcHandlers(): void {
     return updateFocusSchool(schoolName, patch)
   })
 
+  // Wishlist - umumiy katalogdan tanlab qo'shiladigan "orzu" ro'yxati.
+  handle('wishlist:getAll', () => {
+    return getAllWishlistItems()
+  })
+
+  handle('wishlist:add', (_event, input: WishlistItemInput) => {
+    return addWishlistItem(input)
+  })
+
+  handle('wishlist:update', (_event, id: number, patch: WishlistItemPatch) => {
+    return updateWishlistItem(id, patch)
+  })
+
+  handle('wishlist:delete', (_event, id: number) => {
+    deleteWishlistItem(id)
+  })
+
   // Quest Timeline - kvest bajarilganlik holati (mission_status'ga o'xshash).
   handle('questStatus:getAll', () => {
     return getAllQuestStatuses()
@@ -206,7 +226,8 @@ export function registerIpcHandlers(): void {
       companionStatuses: db.prepare('SELECT * FROM companion_status').all(),
       focusSchools: db.prepare('SELECT * FROM focus_school').all(),
       userProfile: db.prepare('SELECT * FROM user_profile WHERE id = 1').get(),
-      questStatuses: db.prepare('SELECT * FROM quest_status').all()
+      questStatuses: db.prepare('SELECT * FROM quest_status').all(),
+      wishlistItems: db.prepare('SELECT * FROM wishlist_item').all()
     }
 
     const result = await dialog.showSaveDialog({

@@ -5,6 +5,7 @@ import {
   Package,
   Shield,
   Bot,
+  Heart,
   Globe,
   Milestone,
   Scroll,
@@ -18,6 +19,7 @@ export type View =
   | 'myCollection'
   | 'weapons'
   | 'warframes'
+  | 'wishlist'
   | 'missions'
   | 'quests'
   | 'nightwave'
@@ -52,7 +54,8 @@ const NAV_GROUPS: NavGroup[] = [
       { view: 'myCollection', label: 'Mening qurollarim', icon: Package },
       { view: 'weapons', label: 'Weapons', icon: Crosshair },
       { view: 'warframes', label: 'Warframes', icon: Shield },
-      { view: 'companion', label: 'Companion', icon: Bot }
+      { view: 'companion', label: 'Companion', icon: Bot },
+      { view: 'wishlist', label: 'Wishlist', icon: Heart }
     ]
   },
   {
