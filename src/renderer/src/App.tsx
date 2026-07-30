@@ -3,6 +3,7 @@ import { AnimatePresence, motion, type Variants } from 'framer-motion'
 import { useAppStore } from './store/useAppStore'
 import Sidebar, { type View } from './components/Sidebar'
 import Dashboard from './views/Dashboard'
+import MyCollection from './views/MyCollection'
 import WeaponsPage from './views/WeaponsPage'
 import WarframesPage from './views/WarframesPage'
 import MissionTracker from './views/MissionTracker'
@@ -27,6 +28,7 @@ const glitchVariants: Variants = {
 
 const VIEWS: Record<View, () => React.JSX.Element> = {
   dashboard: Dashboard,
+  myCollection: MyCollection,
   weapons: WeaponsPage,
   warframes: WarframesPage,
   missions: MissionTracker,

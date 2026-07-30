@@ -17,3 +17,7 @@ export const WEAPON_CATEGORIES = new Set([
 export const WEAPONS_PAGE_CATEGORIES = new Set([...WEAPON_CATEGORIES, 'Sentinels'])
 
 export const WARFRAME_CATEGORIES = new Set(['Warframes'])
+
+// "Mening qurollarim" sahifasi uchun - egalik qilingan qurol/Warframe/
+// hamrohlarning barchasini bitta joyda ko'rsatish (Pets = Companion).
+export const MY_COLLECTION_CATEGORIES = new Set([...WEAPONS_PAGE_CATEGORIES, ...WARFRAME_CATEGORIES, 'Pets'])

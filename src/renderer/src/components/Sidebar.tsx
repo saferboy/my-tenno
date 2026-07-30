@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard,
   Crosshair,
+  Package,
   Shield,
   Bot,
   Globe,
@@ -14,6 +15,7 @@ import { useUserProfileStore } from '../store/useUserProfileStore'
 
 export type View =
   | 'dashboard'
+  | 'myCollection'
   | 'weapons'
   | 'warframes'
   | 'missions'
@@ -47,6 +49,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'ARSENAL',
     items: [
+      { view: 'myCollection', label: 'Mening qurollarim', icon: Package },
       { view: 'weapons', label: 'Weapons', icon: Crosshair },
       { view: 'warframes', label: 'Warframes', icon: Shield },
       { view: 'companion', label: 'Companion', icon: Bot }

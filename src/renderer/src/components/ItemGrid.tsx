@@ -14,6 +14,7 @@ const GAP = 12
 interface ItemGridProps {
   title: string
   categoryScope: Set<string>
+  defaultStatusFilter?: StatusFilter
 }
 
 // Arsenal'dan ajratilgan (Weapons/Warframes sahifalari uchun) qayta
@@ -21,7 +22,7 @@ interface ItemGridProps {
 // chiqarmaslik uchun row-bazaviy virtualization (@tanstack/react-virtual).
 // Qidiruv/filtr holati bu komponentga xos (mahalliy) - shu bilan har
 // sahifa o'z filtrini mustaqil saqlaydi.
-function ItemGrid({ title, categoryScope }: ItemGridProps): React.JSX.Element {
+function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGridProps): React.JSX.Element {
   const allItems = useAppStore((s) => s.items)
   const statusByItem = useAppStore((s) => s.statusByItem)
   const updateStatus = useAppStore((s) => s.updateStatus)
@@ -31,7 +32,7 @@ function ItemGrid({ title, categoryScope }: ItemGridProps): React.JSX.Element {
 
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(defaultStatusFilter)
   const [selected, setSelected] = useState<WarframeItem | null>(null)
   const [containerWidth, setContainerWidth] = useState(800)
   const parentRef = useRef<HTMLDivElement>(null)
