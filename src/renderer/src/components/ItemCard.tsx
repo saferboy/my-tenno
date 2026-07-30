@@ -54,9 +54,9 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
     >
       <div className="flex flex-1 items-center justify-center overflow-hidden py-1">
         {imageSrc ? (
-          <img src={imageSrc} alt={item.name} draggable={false} className="max-h-16 max-w-full object-contain" />
+          <img src={imageSrc} alt={item.name} draggable={false} className="max-h-24 max-w-full object-contain" />
         ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--orokin-border)] text-lg font-bold text-[var(--orokin-text-dim)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--orokin-border)] text-xl font-bold text-[var(--orokin-text-dim)]">
             {item.name.charAt(0)}
           </div>
         )}
