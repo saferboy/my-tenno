@@ -32,6 +32,7 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
 
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+  const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(defaultStatusFilter)
   const [selected, setSelected] = useState<WarframeItem | null>(null)
   const [containerWidth, setContainerWidth] = useState(800)
@@ -51,10 +52,23 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
 
   const categories = useMemo(() => Array.from(new Set(scopedItems.map((i) => i.category))).sort(), [scopedItems])
 
-  const filtered = useMemo(
-    () => filterItems({ items: scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem }),
-    [scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem]
+  // O'yin-ichi Arsenal'dagi kabi ikki bosqichli filtr: avval slot (Primary/
+  // Secondary/...), so'ng shu slot ichidagi qurol turi (Rifle/Shotgun/Bow/
+  // Sniper/... - item.type maydonidan). Kategoriya o'zgarganda turlar
+  // ro'yxati ham yangilanadi, shuning uchun turi filtri kontekstga mos.
+  const itemsInCategory = useMemo(
+    () => (categoryFilter ? scopedItems.filter((i) => i.category === categoryFilter) : scopedItems),
+    [scopedItems, categoryFilter]
   )
+  const types = useMemo(
+    () => Array.from(new Set(itemsInCategory.map((i) => i.type).filter((t): t is string => Boolean(t)))).sort(),
+    [itemsInCategory]
+  )
+
+  const filtered = useMemo(() => {
+    const byStandardFilters = filterItems({ items: scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem })
+    return typeFilter ? byStandardFilters.filter((i) => i.type === typeFilter) : byStandardFilters
+  }, [scopedItems, fuse, searchQuery, categoryFilter, typeFilter, statusFilter, statusByItem])
 
   const owned = useMemo(
     () => scopedItems.filter((i) => statusByItem[i.uniqueName]?.owned).length,
@@ -110,13 +124,30 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
         {categories.length > 1 && (
           <select
             value={categoryFilter ?? ''}
-            onChange={(e) => setCategoryFilter(e.target.value || null)}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value || null)
+              setTypeFilter(null)
+            }}
             className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
           >
-            <option value="">Barcha turlar</option>
+            <option value="">Barcha kategoriyalar</option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}
+              </option>
+            ))}
+          </select>
+        )}
+        {types.length > 1 && (
+          <select
+            value={typeFilter ?? ''}
+            onChange={(e) => setTypeFilter(e.target.value || null)}
+            className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
+          >
+            <option value="">Barcha turlar</option>
+            {types.map((type) => (
+              <option key={type} value={type}>
+                {type}
               </option>
             ))}
           </select>
