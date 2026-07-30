@@ -1,6 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAppStore } from '../store/useAppStore'
 import { useCompanionStore } from '../store/useCompanionStore'
+import Pagination from '../components/Pagination'
+
+const PAGE_SIZE = 24
 
 // TDD 5.6: Companion'lar master data'dagi "Pets" kategoriyasidan olinadi
 // (Arsenal bilan bir xil item_status orqali owned/maxed), DNA stabilligi
@@ -27,6 +30,10 @@ function CompanionFocus(): React.JSX.Element {
     [items]
   )
 
+  const [page, setPage] = useState(0)
+  const pageCount = Math.max(1, Math.ceil(companions.length / PAGE_SIZE))
+  const pageCompanions = companions.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -46,7 +53,7 @@ function CompanionFocus(): React.JSX.Element {
           Companion&apos;lar
         </h2>
         <ul className="space-y-1">
-          {companions.map((companion) => {
+          {pageCompanions.map((companion) => {
             const itemStatus = itemStatusByItem[companion.uniqueName]
             const dnaStability = companionStatusByItem[companion.uniqueName]?.dnaStability ?? null
             return (
@@ -89,6 +96,7 @@ function CompanionFocus(): React.JSX.Element {
             )
           })}
         </ul>
+        <Pagination page={page} pageCount={pageCount} onChange={setPage} />
       </div>
 
       <div className="surface-base rounded-lg p-4">

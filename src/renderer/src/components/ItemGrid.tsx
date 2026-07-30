@@ -1,15 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useVirtualizer } from '@tanstack/react-virtual'
+import { useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { useAppStore, type StatusFilter } from '../store/useAppStore'
 import { filterItems } from '../store/selectors'
 import ItemCard from './ItemCard'
 import ItemDrawer from './ItemDrawer'
+import Pagination from './Pagination'
 import type { WarframeItem } from '../../../main/masterData/types'
 
-const CARD_MIN_WIDTH = 160
-const CARD_HEIGHT = 196
-const GAP = 12
+const PAGE_SIZE = 24
 
 interface ItemGridProps {
   title: string
@@ -18,8 +16,7 @@ interface ItemGridProps {
 }
 
 // Arsenal'dan ajratilgan (Weapons/Warframes sahifalari uchun) qayta
-// ishlatiladigan virtualized grid - 1000+ elementni bir vaqtda DOM'ga
-// chiqarmaslik uchun row-bazaviy virtualization (@tanstack/react-virtual).
+// ishlatiladigan grid - sahifalash (24 tadan) bilan, cheksiz scroll o'rniga.
 // Qidiruv/filtr holati bu komponentga xos (mahalliy) - shu bilan har
 // sahifa o'z filtrini mustaqil saqlaydi.
 function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGridProps): React.JSX.Element {
@@ -35,20 +32,18 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
   const [typeFilter, setTypeFilter] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(defaultStatusFilter)
   const [selected, setSelected] = useState<WarframeItem | null>(null)
-  const [containerWidth, setContainerWidth] = useState(800)
-  const parentRef = useRef<HTMLDivElement>(null)
+  const [page, setPage] = useState(0)
 
-  useEffect(() => {
-    const el = parentRef.current
-    if (!el) return
-
-    const observer = new ResizeObserver((entries) => {
-      const width = entries[0]?.contentRect.width
-      if (width) setContainerWidth(width)
-    })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
+  // Har qanday filtr o'zgarganda 1-sahifaga qaytish - render vaqtida
+  // to'g'ridan-to'g'ri (useEffect emas, React'ning "adjusting state" patterni)
+  // - aks holda foydalanuvchi filtrlangan (qisqargan) ro'yxatda mavjud
+  // bo'lmagan sahifada qolib ketishi mumkin edi.
+  const filterKey = `${searchQuery}|${categoryFilter}|${typeFilter}|${statusFilter}`
+  const [lastFilterKey, setLastFilterKey] = useState(filterKey)
+  if (filterKey !== lastFilterKey) {
+    setLastFilterKey(filterKey)
+    setPage(0)
+  }
 
   const categories = useMemo(() => Array.from(new Set(scopedItems.map((i) => i.category))).sort(), [scopedItems])
 
@@ -70,6 +65,9 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
     return typeFilter ? byStandardFilters.filter((i) => i.type === typeFilter) : byStandardFilters
   }, [scopedItems, fuse, searchQuery, categoryFilter, typeFilter, statusFilter, statusByItem])
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const pageItems = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+
   const owned = useMemo(
     () => scopedItems.filter((i) => statusByItem[i.uniqueName]?.owned).length,
     [scopedItems, statusByItem]
@@ -79,20 +77,10 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
     [scopedItems, statusByItem]
   )
 
-  const columns = Math.max(1, Math.floor(containerWidth / (CARD_MIN_WIDTH + GAP)))
-  const rowCount = Math.ceil(filtered.length / columns)
-
-  const rowVirtualizer = useVirtualizer({
-    count: rowCount,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => CARD_HEIGHT + GAP,
-    overscan: 5
-  })
-
   const selectedStatus = selected ? statusByItem[selected.uniqueName] : undefined
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-8">
+    <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-8">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
           {title}
@@ -173,38 +161,18 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
         </span>
       </div>
 
-      <div ref={parentRef} className="flex-1 overflow-y-auto">
-        <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const rowItems = filtered.slice(virtualRow.index * columns, virtualRow.index * columns + columns)
-            return (
-              <div
-                key={virtualRow.key}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: virtualRow.size,
-                  transform: `translateY(${virtualRow.start}px)`,
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                  gap: GAP
-                }}
-              >
-                {rowItems.map((item) => (
-                  <ItemCard
-                    key={item.uniqueName}
-                    item={item}
-                    status={statusByItem[item.uniqueName]}
-                    onClick={() => setSelected(item)}
-                  />
-                ))}
-              </div>
-            )
-          })}
-        </div>
+      <div className="grid auto-rows-[196px] grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
+        {pageItems.map((item) => (
+          <ItemCard
+            key={item.uniqueName}
+            item={item}
+            status={statusByItem[item.uniqueName]}
+            onClick={() => setSelected(item)}
+          />
+        ))}
       </div>
+
+      <Pagination page={page} pageCount={pageCount} onChange={setPage} />
 
       {selected && (
         <ItemDrawer
