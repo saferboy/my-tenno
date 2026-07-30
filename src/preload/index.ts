@@ -12,7 +12,9 @@ import type {
   RivenModPatch,
   CompanionStatus,
   FocusSchool,
-  FocusSchoolPatch
+  FocusSchoolPatch,
+  UserProfile,
+  UserProfilePatch
 } from '../main/db/types'
 import type { BackupInfo } from '../main/db/backup'
 import type { SharePayload } from '../main/shareCode'
@@ -54,6 +56,10 @@ const api = {
   getFocusSchools: (): Promise<FocusSchool[]> => ipcRenderer.invoke('focusSchool:getAll'),
   updateFocusSchool: (schoolName: string, patch: FocusSchoolPatch): Promise<FocusSchool> =>
     ipcRenderer.invoke('focusSchool:update', schoolName, patch),
+
+  getUserProfile: (): Promise<UserProfile> => ipcRenderer.invoke('userProfile:get'),
+  updateUserProfile: (patch: UserProfilePatch): Promise<UserProfile> =>
+    ipcRenderer.invoke('userProfile:update', patch),
 
   toggleOverlay: (): Promise<boolean> => ipcRenderer.invoke('overlay:toggle'),
 

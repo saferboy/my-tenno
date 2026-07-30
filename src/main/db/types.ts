@@ -81,3 +81,12 @@ export interface FocusSchoolPatch {
   rank?: number
   notes?: string | null
 }
+
+export interface UserProfile {
+  masteryRank: number
+  updatedAt: string
+}
+
+export interface UserProfilePatch {
+  masteryRank?: number
+}

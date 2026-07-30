@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   LayoutDashboard,
   Crosshair,
@@ -7,7 +8,7 @@ import {
   Zap,
   Settings as SettingsIcon
 } from 'lucide-react'
-import ProgressBar from './ProgressBar'
+import { useUserProfileStore } from '../store/useUserProfileStore'
 
 export type View = 'dashboard' | 'arsenal' | 'missions' | 'nightwave' | 'riven' | 'companion' | 'settings'
 
@@ -50,6 +51,30 @@ const NAV_GROUPS: NavGroup[] = [
 ]
 
 function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
+  const masteryRank = useUserProfileStore((s) => s.masteryRank)
+  const initProfile = useUserProfileStore((s) => s.init)
+  const setMasteryRank = useUserProfileStore((s) => s.setMasteryRank)
+
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+
+  useEffect(() => {
+    initProfile()
+  }, [initProfile])
+
+  function startEditing(): void {
+    setDraft(String(masteryRank))
+    setEditing(true)
+  }
+
+  function commitEditing(): void {
+    const parsed = Number(draft)
+    if (Number.isFinite(parsed)) {
+      setMasteryRank(Math.max(0, Math.round(parsed)))
+    }
+    setEditing(false)
+  }
+
   return (
     <nav className="flex w-56 shrink-0 flex-col border-r border-[var(--color-void-border)] bg-[var(--color-void-dark)]">
       {/* Logo */}
@@ -118,24 +143,38 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
         </button>
       </div>
 
-      {/* Profil - Phase 2'da haqiqiy (qo'lda kiritiladigan) ma'lumotga ulanadi,
-          hozircha vizual qobiq bo'sh/nol holatda. */}
-      <div className="border-t border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2.5">
-        <div className="mb-2 flex items-center gap-2">
-          <div className="rank-badge flex h-7 w-7 shrink-0 items-center justify-center rounded-md font-mono text-[11px] font-bold text-white">
-            —
-          </div>
-          <div>
-            <div className="text-xs font-semibold text-[var(--color-t1)]">Tenno</div>
-            <div className="font-mono text-[10px] text-[var(--color-t2)]">Mastery Rank —</div>
-          </div>
+      {/* Profil - Mastery Rank qo'lda kiritiladi (Warframe API bermaydi),
+          bosilganda inline tahrirlash rejimiga o'tadi. */}
+      <button
+        type="button"
+        onClick={startEditing}
+        className="t flex items-center gap-2 border-t border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2.5 text-left hover:bg-white/3"
+      >
+        <div className="rank-badge flex h-8 w-8 shrink-0 items-center justify-center rounded-md font-mono text-xs font-bold text-white">
+          {masteryRank}
         </div>
-        <ProgressBar value={0} height={3} />
-        <div className="mt-2 flex items-center gap-3 font-mono text-[10px] text-[var(--color-t3)]">
-          <span>₵ —</span>
-          <span>⬡ —</span>
+        <div className="min-w-0 flex-1">
+          <div className="text-xs font-semibold text-[var(--color-t1)]">Tenno</div>
+          {editing ? (
+            <input
+              type="number"
+              min={0}
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onBlur={commitEditing}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') commitEditing()
+                if (e.key === 'Escape') setEditing(false)
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-0.5 w-16 rounded border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-1 py-0.5 font-mono text-[10px] text-[var(--color-t1)]"
+            />
+          ) : (
+            <div className="font-mono text-[10px] text-[var(--color-t2)]">Mastery Rank {masteryRank}</div>
+          )}
         </div>
-      </div>
+      </button>
     </nav>
   )
 }

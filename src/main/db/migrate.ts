@@ -4,6 +4,7 @@ import migration002 from './migrations/002_mission_status.sql?raw'
 import migration003 from './migrations/003_nightwave.sql?raw'
 import migration004 from './migrations/004_riven.sql?raw'
 import migration005 from './migrations/005_companion_focus.sql?raw'
+import migration006 from './migrations/006_user_profile.sql?raw'
 import { createBackup } from './backup'
 
 interface Migration {
@@ -17,7 +18,8 @@ const migrations: Migration[] = [
   { version: 2, sql: migration002 },
   { version: 3, sql: migration003 },
   { version: 4, sql: migration004 },
-  { version: 5, sql: migration005 }
+  { version: 5, sql: migration005 },
+  { version: 6, sql: migration006 }
 ]
 
 function getCurrentVersion(db: Database.Database): number {

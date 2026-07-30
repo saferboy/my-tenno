@@ -8,12 +8,14 @@ import { getAllChallenges, addChallenge, setChallengeCompleted, deleteChallenge 
 import { getAllRivenMods, addRivenMod, updateRivenMod, deleteRivenMod } from '../db/rivenMod'
 import { getAllCompanionStatuses, setDnaStability } from '../db/companionStatus'
 import { getAllFocusSchools, updateFocusSchool } from '../db/focusSchool'
+import { getUserProfile, updateUserProfile } from '../db/userProfile'
 import type {
   ItemStatusPatch,
   NightwaveChallengeInput,
   RivenModInput,
   RivenModPatch,
-  FocusSchoolPatch
+  FocusSchoolPatch,
+  UserProfilePatch
 } from '../db/types'
 import { logError } from '../logger'
 import { getItemImage } from '../imageCache'
@@ -129,6 +131,16 @@ export function registerIpcHandlers(): void {
     return updateFocusSchool(schoolName, patch)
   })
 
+  // Foydalanuvchi profili (Mastery Rank) - Warframe API bermaydigan
+  // ma'lumot, qo'lda kiritiladi.
+  handle('userProfile:get', () => {
+    return getUserProfile()
+  })
+
+  handle('userProfile:update', (_event, patch: UserProfilePatch) => {
+    return updateUserProfile(patch)
+  })
+
   // TDD 5.7: Mini Overlay oynasini yoqish/o'chirish.
   handle('overlay:toggle', () => {
     return toggleOverlay()
@@ -182,7 +194,8 @@ export function registerIpcHandlers(): void {
       nightwaveChallenges: db.prepare('SELECT * FROM nightwave_challenge').all(),
       rivenMods: db.prepare('SELECT * FROM riven_mod').all(),
       companionStatuses: db.prepare('SELECT * FROM companion_status').all(),
-      focusSchools: db.prepare('SELECT * FROM focus_school').all()
+      focusSchools: db.prepare('SELECT * FROM focus_school').all(),
+      userProfile: db.prepare('SELECT * FROM user_profile WHERE id = 1').get()
     }
 
     const result = await dialog.showSaveDialog({
