@@ -95,7 +95,7 @@ function RivenTracker(): React.JSX.Element {
           type="submit"
           className="chamfer self-start bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
-          Riven qo'shish
+          Riven qo&apos;shish
         </button>
       </form>
 
@@ -147,7 +147,7 @@ function RivenTracker(): React.JSX.Element {
                   onClick={() => removeRiven(riven.id)}
                   className="text-[var(--orokin-text-dim)] hover:text-red-400"
                 >
-                  O'chirish
+                  O&apos;chirish
                 </button>
               </div>
             </div>

@@ -40,7 +40,7 @@ function CompanionFocus(): React.JSX.Element {
       <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Companion &amp; Focus</h1>
 
       <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">Companion'lar</h2>
+        <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">Companion&apos;lar</h2>
         <ul className="space-y-1">
           {companions.map((companion) => {
             const itemStatus = itemStatusByItem[companion.uniqueName]

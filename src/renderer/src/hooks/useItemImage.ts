@@ -2,23 +2,20 @@ import { useEffect, useState } from 'react'
 import { getCachedImage, loadImage } from '../imageCache'
 
 export function useItemImage(uniqueName: string, imageName: string | undefined): string | null {
-  const [src, setSrc] = useState<string | null>(() => getCachedImage(uniqueName) ?? null)
+  const cached = getCachedImage(uniqueName)
+  const [loaded, setLoaded] = useState<string | null>(null)
 
   useEffect(() => {
-    const cached = getCachedImage(uniqueName)
-    if (cached !== undefined) {
-      setSrc(cached)
-      return undefined
-    }
+    if (getCachedImage(uniqueName) !== undefined) return undefined
 
     let active = true
     loadImage(uniqueName, imageName).then((result) => {
-      if (active) setSrc(result)
+      if (active) setLoaded(result)
     })
     return () => {
       active = false
     }
   }, [uniqueName, imageName])
 
-  return src
+  return cached !== undefined ? cached : loaded
 }

@@ -41,7 +41,7 @@ function UpdateBanner(): React.JSX.Element | null {
             onClick={() => window.api.installUpdate()}
             className="text-[var(--orokin-gold)] underline"
           >
-            O'rnatish va qayta ishga tushirish
+            O&apos;rnatish va qayta ishga tushirish
           </button>
         </span>
       )}

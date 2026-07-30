@@ -90,7 +90,7 @@ function NightwaveTracker(): React.JSX.Element {
           <option value="season">Mavsum</option>
         </select>
         <button type="submit" className="chamfer bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black">
-          Qo'shish
+          Qo&apos;shish
         </button>
       </form>
 
@@ -98,7 +98,7 @@ function NightwaveTracker(): React.JSX.Element {
         <div key={groupType} className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
           <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">{TYPE_LABELS[groupType]}</h2>
           {grouped[groupType].length === 0 && (
-            <p className="text-sm text-[var(--orokin-text-dim)]">Hali challenge qo'shilmagan.</p>
+            <p className="text-sm text-[var(--orokin-text-dim)]">Hali challenge qo&apos;shilmagan.</p>
           )}
           <ul className="space-y-1">
             {grouped[groupType].map((challenge) => (

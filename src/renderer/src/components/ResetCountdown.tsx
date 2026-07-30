@@ -8,7 +8,7 @@ function formatRemaining(ms: number): string {
   const seconds = totalSeconds % 60
 
   const clock = [hours, minutes, seconds].map((n) => String(n).padStart(2, '0')).join(':')
-  return days > 0 ? `${days}k ${clock}` : clock
+  return days > 0 ? `${days} kun ${clock}` : clock
 }
 
 interface ResetCountdownProps {

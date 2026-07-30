@@ -55,8 +55,10 @@ function Settings(): React.JSX.Element {
   }, [showToast])
 
   useEffect(() => {
-    refreshBackups()
-  }, [refreshBackups])
+    window.api.listBackups().then(setBackups, (error) => {
+      showToast(error instanceof Error ? error.message : String(error))
+    })
+  }, [showToast])
 
   async function handleCreateBackup(): Promise<void> {
     try {
@@ -98,7 +100,7 @@ function Settings(): React.JSX.Element {
 
       <div className="chamfer flex flex-wrap items-center gap-3 border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
         <p className="text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">
-          Mini Overlay (bugungi vazifalar, o'yin ustida)
+          Mini Overlay (bugungi vazifalar, o&apos;yin ustida)
         </p>
         <button
           type="button"
@@ -128,9 +130,9 @@ function Settings(): React.JSX.Element {
 
       <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
         <p className="mb-2 text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">
-          Backup'lar (oxirgi 5 tasi saqlanadi)
+          Backup&apos;lar (oxirgi 5 tasi saqlanadi)
         </p>
-        {backups.length === 0 && <p className="text-sm text-[var(--orokin-text-dim)]">Hali backup yo'q.</p>}
+        {backups.length === 0 && <p className="text-sm text-[var(--orokin-text-dim)]">Hali backup yo&apos;q.</p>}
         <ul className="space-y-1">
           {backups.map((backup) => (
             <li
@@ -198,7 +200,7 @@ function Settings(): React.JSX.Element {
             onClick={handleImportShareCode}
             className="chamfer self-start border border-[var(--orokin-border)] px-3 py-1 text-xs uppercase text-[var(--orokin-cyan)] hover:bg-[var(--orokin-border)]"
           >
-            Import qilish (faqat ko'rish)
+            Import qilish (faqat ko&apos;rish)
           </button>
           {importedPreview && (
             <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] p-3 text-xs">
@@ -206,7 +208,7 @@ function Settings(): React.JSX.Element {
               <p>Qurol/frame yozuvlari: {importedPreview.itemStatuses.length}</p>
               <p>Missiya yozuvlari: {importedPreview.missionStatuses.length}</p>
               <p className="mt-1 text-[var(--orokin-text-dim)]">
-                Bu faqat ko'rish uchun - sizning bazangizga qo'shilmaydi.
+                Bu faqat ko&apos;rish uchun - sizning bazangizga qo&apos;shilmaydi.
               </p>
             </div>
           )}

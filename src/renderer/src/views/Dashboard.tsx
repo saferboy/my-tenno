@@ -83,8 +83,8 @@ function Dashboard(): React.JSX.Element {
       </div>
 
       <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <p className="mb-2 text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">So'nggi faoliyat</p>
-        {recent.length === 0 && <p className="text-sm text-[var(--orokin-text-dim)]">Hali o'zgarish yo'q.</p>}
+        <p className="mb-2 text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">So&apos;nggi faoliyat</p>
+        {recent.length === 0 && <p className="text-sm text-[var(--orokin-text-dim)]">Hali o&apos;zgarish yo&apos;q.</p>}
         <ul className="space-y-1">
           {recent.map(({ status, item }) => (
             <li
