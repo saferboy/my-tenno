@@ -20,7 +20,7 @@ function borderColor(status: ItemStatus | undefined): string {
 function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
   const wasMaxed = useRef(Boolean(status?.maxed))
   const [pulse, setPulse] = useState(false)
-  const imageSrc = useItemImage(item.imageName)
+  const imageSrc = useItemImage(item.uniqueName, item.imageName)
 
   // TDD 6.4: Qurol "Max" qilinganda ramka oqdan oltin rangga o'tib, yengil
   // pulse effekti beradi - faqat holat aynan shu zumda o'zgarganda ishga

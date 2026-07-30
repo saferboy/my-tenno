@@ -52,8 +52,8 @@ export function registerIpcHandlers(): void {
     return getNodes()
   })
 
-  handle('masterData:getItemImage', (_event, imageName: string) => {
-    return getItemImage(imageName)
+  handle('masterData:getItemImage', (_event, uniqueName: string, imageName: string | undefined) => {
+    return getItemImage(uniqueName, imageName)
   })
 
   handle('db:getSchemaVersion', () => {

@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import https from 'https'
+import { getCorrectedImageName } from './imageNameMap'
 
 const CDN_BASE = 'https://cdn.warframestat.us/img/'
 const SAFE_IMAGE_NAME = /^[a-zA-Z0-9._-]+$/
@@ -64,7 +65,16 @@ function fetchBuffer(url: string, redirectsLeft = MAX_REDIRECTS): Promise<Buffer
 // (WFCD alohida CDN orqali beradi) - shu sababli birinchi ko'rilganda
 // tarmoqdan yuklanadi va AppData/Roaming/TennoLog/imageCache/ ichida
 // keshlanadi, keyingi safar internetsiz ham ko'rsatiladi.
-export async function getItemImage(imageName: string): Promise<string | null> {
+//
+// npm paketining `imageName` maydoni eskirgan (hash-asosidagi) nomlarni
+// saqlaydi va CDN'da doimiy 404 qaytaradi (WFCD issue #636 regressiyasi) -
+// shu sababli avval imageNameMap orqali jonli API'dan olingan to'g'ri nom
+// bilan almashtirishga harakat qilinadi, topilmasa eski nomga qaytiladi.
+export async function getItemImage(
+  uniqueName: string,
+  fallbackImageName: string | undefined
+): Promise<string | null> {
+  const imageName = await getCorrectedImageName(uniqueName, fallbackImageName)
   if (!imageName || !SAFE_IMAGE_NAME.test(imageName)) return null
 
   const cachePath = join(getCacheDir(), imageName)

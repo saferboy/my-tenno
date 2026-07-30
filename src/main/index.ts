@@ -6,6 +6,7 @@ import { registerIpcHandlers } from './ipc'
 import { closeDb } from './db'
 import { logError } from './logger'
 import { initAutoUpdater } from './updater'
+import { warmImageNameMap } from './imageNameMap'
 
 // AppData/Roaming/TennoLog/ ostida saqlash uchun (TDD 4.2) - npm paket nomidan
 // mustaqil, dev va build rejimlarida bir xil papka ishlatilishi uchun aniq
@@ -88,6 +89,10 @@ app.whenReady().then(() => {
   })
 
   registerIpcHandlers()
+
+  // Qurol rasmlari uchun to'g'ri CDN nomlarini fonda yangilaydi - ilova
+  // ishga tushishini kutmaydi, xato bo'lsa ham jim o'tadi (imageNameMap.ts).
+  warmImageNameMap()
 
   const mainWindow = createWindow()
 
