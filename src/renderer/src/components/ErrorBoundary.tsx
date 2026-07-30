@@ -21,12 +21,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.error) {
       return (
         <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-10">
-          <h1 className="text-lg font-bold text-red-400">Kutilmagan xatolik yuz berdi</h1>
-          <p className="max-w-md text-center text-sm text-[var(--orokin-text-dim)]">{this.state.error.message}</p>
+          <h1 className="font-display text-lg font-bold text-[var(--color-danger)]">Kutilmagan xatolik yuz berdi</h1>
+          <p className="max-w-md text-center text-sm text-[var(--color-t2)]">{this.state.error.message}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="chamfer bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black"
+            className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
           >
             Qayta yuklash
           </button>

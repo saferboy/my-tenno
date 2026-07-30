@@ -19,7 +19,7 @@ function UpdateBanner(): React.JSX.Element | null {
   }
 
   return (
-    <div className="chamfer fixed top-4 left-1/2 z-50 -translate-x-1/2 border border-[var(--orokin-gold)] bg-[var(--orokin-panel)] px-4 py-2 text-sm">
+    <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-[var(--color-tenno-gold)]/40 bg-[var(--color-void-base)] px-4 py-2 text-sm shadow-2xl">
       {state.type === 'available' && (
         <span>
           Yangi versiya mavjud ({state.version}).{' '}
@@ -27,7 +27,7 @@ function UpdateBanner(): React.JSX.Element | null {
             type="button"
             onClick={handleDownload}
             disabled={downloading}
-            className="text-[var(--orokin-gold)] underline disabled:opacity-50"
+            className="text-[var(--color-tenno-gold)] underline disabled:opacity-50"
           >
             {downloading ? 'Yuklanmoqda...' : 'Yuklab olish'}
           </button>
@@ -39,7 +39,7 @@ function UpdateBanner(): React.JSX.Element | null {
           <button
             type="button"
             onClick={() => window.api.installUpdate()}
-            className="text-[var(--orokin-gold)] underline"
+            className="text-[var(--color-tenno-gold)] underline"
           >
             O&apos;rnatish va qayta ishga tushirish
           </button>

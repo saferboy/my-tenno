@@ -30,17 +30,21 @@ function CompanionFocus(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--orokin-text-dim)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
       </div>
     )
   }
 
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
-      <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Companion &amp; Focus</h1>
+      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+        Companion &amp; Focus
+      </h1>
 
-      <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">Companion&apos;lar</h2>
+      <div className="surface-base rounded-lg p-4">
+        <h2 className="mb-2 font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
+          Companion&apos;lar
+        </h2>
         <ul className="space-y-1">
           {companions.map((companion) => {
             const itemStatus = itemStatusByItem[companion.uniqueName]
@@ -48,7 +52,7 @@ function CompanionFocus(): React.JSX.Element {
             return (
               <li
                 key={companion.uniqueName}
-                className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--orokin-border)] py-2 text-sm"
+                className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-void-border)] py-2 text-sm"
               >
                 <span className="min-w-40">{companion.name}</span>
                 <label className="flex items-center gap-1">
@@ -77,7 +81,7 @@ function CompanionFocus(): React.JSX.Element {
                     onChange={(e) =>
                       setDnaStability(companion.uniqueName, e.target.value === '' ? null : Number(e.target.value))
                     }
-                    className="chamfer w-16 border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1"
+                    className="w-16 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
                   />
                   %
                 </label>
@@ -87,8 +91,10 @@ function CompanionFocus(): React.JSX.Element {
         </ul>
       </div>
 
-      <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">Focus Schools</h2>
+      <div className="surface-base rounded-lg p-4">
+        <h2 className="mb-2 font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
+          Focus Schools
+        </h2>
         <ul className="space-y-2">
           {focusSchools.map((school) => (
             <li key={school.schoolName} className="flex flex-wrap items-center gap-2 text-sm">
@@ -100,7 +106,7 @@ function CompanionFocus(): React.JSX.Element {
                   min={0}
                   value={school.rank}
                   onChange={(e) => updateFocusSchool(school.schoolName, { rank: Number(e.target.value) })}
-                  className="chamfer w-16 border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1"
+                  className="w-16 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
                 />
               </label>
               <input
@@ -108,7 +114,7 @@ function CompanionFocus(): React.JSX.Element {
                 placeholder="Izoh (masalan, yig'ilgan Focus)"
                 value={school.notes ?? ''}
                 onChange={(e) => updateFocusSchool(school.schoolName, { notes: e.target.value })}
-                className="chamfer flex-1 border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1"
+                className="flex-1 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
               />
             </li>
           ))}

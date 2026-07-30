@@ -46,7 +46,7 @@ function App(): React.JSX.Element {
   if (error) {
     return (
       <main className="flex min-h-screen items-center justify-center p-10">
-        <p className="text-red-400">Xatolik: {error}</p>
+        <p className="text-[var(--color-danger)]">Xatolik: {error}</p>
       </main>
     )
   }
@@ -54,7 +54,7 @@ function App(): React.JSX.Element {
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center p-10">
-        <p className="text-[var(--orokin-text-dim)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
       </main>
     )
   }

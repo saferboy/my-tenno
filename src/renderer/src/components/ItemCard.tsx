@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import type { WarframeItem } from '../../../main/masterData/types'
 import type { ItemStatus } from '../../../main/db/types'
 import { useItemImage } from '../hooks/useItemImage'
+import Badge from './Badge'
 
 interface ItemCardProps {
   item: WarframeItem
@@ -12,9 +13,9 @@ interface ItemCardProps {
 
 // TDD 6.1: status ranglari - Maxed = oltin, Owned = ko'k, Not Owned = kulrang.
 function borderColor(status: ItemStatus | undefined): string {
-  if (status?.maxed) return 'var(--orokin-gold)'
-  if (status?.owned) return 'var(--orokin-cyan)'
-  return 'var(--orokin-border)'
+  if (status?.maxed) return 'var(--color-tenno-gold)'
+  if (status?.owned) return 'var(--color-tenno-cyan)'
+  return 'var(--color-void-border)'
 }
 
 function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
@@ -44,11 +45,11 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
       style={{ borderColor: borderColor(status) }}
       animate={
         pulse
-          ? { boxShadow: ['0 0 0px #ffffff00', '0 0 16px var(--orokin-gold)', '0 0 0px #ffffff00'] }
+          ? { boxShadow: ['0 0 0px #ffffff00', '0 0 16px var(--color-tenno-gold)', '0 0 0px #ffffff00'] }
           : { boxShadow: '0 0 0px #ffffff00' }
       }
       transition={{ duration: 0.9, ease: 'easeOut' }}
-      className={`chamfer flex h-full w-full flex-col justify-between border bg-[var(--orokin-panel)] p-3 text-left transition-colors hover:bg-[var(--orokin-border)] ${
+      className={`t flex h-full w-full flex-col justify-between rounded-lg border bg-[var(--color-void-base)] p-3 text-left hover:bg-[var(--color-void-surface)] ${
         status?.sold ? 'opacity-50' : ''
       }`}
     >
@@ -56,17 +57,17 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
         {imageSrc ? (
           <img src={imageSrc} alt={item.name} draggable={false} className="max-h-24 max-w-full object-contain" />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--orokin-border)] text-xl font-bold text-[var(--orokin-text-dim)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-void-border)] text-xl font-bold text-[var(--color-t2)]">
             {item.name.charAt(0)}
           </div>
         )}
       </div>
       <div>
         <p className={`text-sm font-semibold ${status?.sold ? 'line-through' : ''}`}>{item.name}</p>
-        <p className="text-xs text-[var(--orokin-text-dim)]">{item.category}</p>
+        <p className="text-xs text-[var(--color-t2)]">{item.category}</p>
       </div>
-      {status?.maxed && <span className="text-xs font-bold text-[var(--orokin-gold)]">MAX</span>}
-      {!status?.maxed && status?.owned && <span className="text-xs text-[var(--orokin-cyan)]">Owned</span>}
+      {status?.maxed && <Badge tone="gold">MAX</Badge>}
+      {!status?.maxed && status?.owned && <Badge tone="cyan">Owned</Badge>}
     </motion.button>
   )
 }

@@ -96,59 +96,61 @@ function Settings(): React.JSX.Element {
 
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
-      <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Sozlamalar</h1>
+      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+        Sozlamalar
+      </h1>
 
-      <div className="chamfer flex flex-wrap items-center gap-3 border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <p className="text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">
+      <div className="surface-base flex flex-wrap items-center gap-3 rounded-lg p-4">
+        <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
           Mini Overlay (bugungi vazifalar, o&apos;yin ustida)
         </p>
         <button
           type="button"
           onClick={handleToggleOverlay}
-          className="chamfer border border-[var(--orokin-border)] px-4 py-2 text-sm text-[var(--orokin-text-dim)] hover:text-[var(--orokin-text)]"
+          className="rounded-md border border-[var(--color-void-border)] px-4 py-2 text-sm text-[var(--color-t2)] hover:text-[var(--color-t1)]"
         >
           {overlayOpen ? "O'chirish" : "Yoqish"}
         </button>
       </div>
 
-      <div className="chamfer flex flex-wrap gap-3 border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
+      <div className="surface-base flex flex-wrap gap-3 rounded-lg p-4">
         <button
           type="button"
           onClick={handleCreateBackup}
-          className="chamfer bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black"
+          className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
           Backup yaratish
         </button>
         <button
           type="button"
           onClick={handleExportJson}
-          className="chamfer border border-[var(--orokin-border)] px-4 py-2 text-sm text-[var(--orokin-text-dim)] hover:text-[var(--orokin-text)]"
+          className="rounded-md border border-[var(--color-void-border)] px-4 py-2 text-sm text-[var(--color-t2)] hover:text-[var(--color-t1)]"
         >
           JSON eksport qilish
         </button>
       </div>
 
-      <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <p className="mb-2 text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">
+      <div className="surface-base rounded-lg p-4">
+        <p className="mb-2 font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
           Backup&apos;lar (oxirgi 5 tasi saqlanadi)
         </p>
-        {backups.length === 0 && <p className="text-sm text-[var(--orokin-text-dim)]">Hali backup yo&apos;q.</p>}
+        {backups.length === 0 && <p className="text-sm text-[var(--color-t2)]">Hali backup yo&apos;q.</p>}
         <ul className="space-y-1">
           {backups.map((backup) => (
             <li
               key={backup.fileName}
-              className="flex items-center justify-between border-b border-[var(--orokin-border)] py-2 text-sm"
+              className="flex items-center justify-between border-b border-[var(--color-void-border)] py-2 text-sm"
             >
               <span>
                 {backup.fileName}
-                <span className="ml-2 text-[var(--orokin-text-dim)]">
+                <span className="ml-2 text-[var(--color-t2)]">
                   {new Date(backup.createdAt).toLocaleString()}
                 </span>
               </span>
               <button
                 type="button"
                 onClick={() => handleRestore(backup.fileName)}
-                className="chamfer border border-[var(--orokin-border)] px-3 py-1 text-xs uppercase text-[var(--orokin-cyan)] hover:bg-[var(--orokin-border)]"
+                className="rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
               >
                 Restore
               </button>
@@ -157,8 +159,8 @@ function Settings(): React.JSX.Element {
         </ul>
       </div>
 
-      <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-        <p className="mb-2 text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">
+      <div className="surface-base rounded-lg p-4">
+        <p className="mb-2 font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
           Share Code (Profile Export/Import)
         </p>
 
@@ -166,7 +168,7 @@ function Settings(): React.JSX.Element {
           <button
             type="button"
             onClick={handleGenerateShareCode}
-            className="chamfer self-start bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black"
+            className="self-start rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
           >
             Share Code yaratish
           </button>
@@ -175,12 +177,12 @@ function Settings(): React.JSX.Element {
               <textarea
                 readOnly
                 value={shareCode}
-                className="chamfer h-24 border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1 text-xs"
+                className="h-24 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1 text-xs"
               />
               <button
                 type="button"
                 onClick={handleCopyShareCode}
-                className="chamfer self-start border border-[var(--orokin-border)] px-3 py-1 text-xs uppercase text-[var(--orokin-cyan)] hover:bg-[var(--orokin-border)]"
+                className="self-start rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
               >
                 Nusxalash
               </button>
@@ -193,21 +195,21 @@ function Settings(): React.JSX.Element {
             placeholder="Boshqa foydalanuvchining Share Code'ini shu yerga joylashtiring"
             value={importCode}
             onChange={(e) => setImportCode(e.target.value)}
-            className="chamfer h-24 border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1 text-xs"
+            className="h-24 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1 text-xs"
           />
           <button
             type="button"
             onClick={handleImportShareCode}
-            className="chamfer self-start border border-[var(--orokin-border)] px-3 py-1 text-xs uppercase text-[var(--orokin-cyan)] hover:bg-[var(--orokin-border)]"
+            className="self-start rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
           >
             Import qilish (faqat ko&apos;rish)
           </button>
           {importedPreview && (
-            <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] p-3 text-xs">
+            <div className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] p-3 text-xs">
               <p>Eksport sanasi: {new Date(importedPreview.exportedAt).toLocaleString()}</p>
               <p>Qurol/frame yozuvlari: {importedPreview.itemStatuses.length}</p>
               <p>Missiya yozuvlari: {importedPreview.missionStatuses.length}</p>
-              <p className="mt-1 text-[var(--orokin-text-dim)]">
+              <p className="mt-1 text-[var(--color-t2)]">
                 Bu faqat ko&apos;rish uchun - sizning bazangizga qo&apos;shilmaydi.
               </p>
             </div>

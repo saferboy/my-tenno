@@ -11,13 +11,13 @@ interface ItemDrawerProps {
 // TDD 5.2: Drawer - qurolni "Max" qilish, sotilganligini belgilash, rank kiritish.
 function ItemDrawer({ item, status, onChange, onClose }: ItemDrawerProps): React.JSX.Element {
   return (
-    <aside className="chamfer fixed top-0 right-0 flex h-full w-80 flex-col gap-4 border-l border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-6">
+    <aside className="fixed top-0 right-0 flex h-full w-80 flex-col gap-4 rounded-l-lg border-l border-[var(--color-void-border)] bg-[var(--color-void-base)] p-6 shadow-2xl">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-bold text-[var(--orokin-gold)]">{item.name}</h2>
-          <p className="text-xs text-[var(--orokin-text-dim)]">{item.category}</p>
+          <h2 className="font-display text-lg font-bold text-[var(--color-tenno-gold)]">{item.name}</h2>
+          <p className="text-xs text-[var(--color-t2)]">{item.category}</p>
         </div>
-        <button type="button" onClick={onClose} className="text-[var(--orokin-text-dim)] hover:text-[var(--orokin-text)]">
+        <button type="button" onClick={onClose} className="text-[var(--color-t2)] hover:text-[var(--color-t1)]">
           ✕
         </button>
       </div>
@@ -53,7 +53,7 @@ function ItemDrawer({ item, status, onChange, onClose }: ItemDrawerProps): React
           max={30}
           value={status?.rank ?? ''}
           onChange={(e) => onChange({ rank: e.target.value === '' ? null : Number(e.target.value) })}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
         />
       </label>
 
@@ -62,7 +62,7 @@ function ItemDrawer({ item, status, onChange, onClose }: ItemDrawerProps): React
         <textarea
           value={status?.notes ?? ''}
           onChange={(e) => onChange({ notes: e.target.value })}
-          className="chamfer flex-1 resize-none border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-2 py-1"
+          className="flex-1 resize-none rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
         />
       </label>
     </aside>

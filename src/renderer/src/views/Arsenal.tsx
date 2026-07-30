@@ -61,7 +61,9 @@ function Arsenal(): React.JSX.Element {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-8">
-      <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Arsenal</h1>
+      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+        Arsenal
+      </h1>
 
       <div className="flex flex-wrap items-center gap-3">
         <input
@@ -69,12 +71,12 @@ function Arsenal(): React.JSX.Element {
           placeholder="Qidirish..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         />
         <select
           value={categoryFilter ?? ''}
           onChange={(e) => setCategoryFilter(e.target.value || null)}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         >
           <option value="">Barcha turlar</option>
           {categories.map((category) => (
@@ -89,17 +91,19 @@ function Arsenal(): React.JSX.Element {
               key={filter}
               type="button"
               onClick={() => setStatusFilter(filter)}
-              className={`chamfer px-3 py-2 text-xs uppercase ${
+              className={`t rounded-md px-3 py-2 text-xs uppercase ${
                 statusFilter === filter
-                  ? 'bg-[var(--orokin-gold)] text-black'
-                  : 'border border-[var(--orokin-border)] text-[var(--orokin-text-dim)]'
+                  ? 'bg-[var(--color-tenno-gold)] text-black'
+                  : 'border border-[var(--color-void-border)] text-[var(--color-t2)] hover:text-[var(--color-t1)]'
               }`}
             >
               {filter}
             </button>
           ))}
         </div>
-        <span className="ml-auto self-center text-xs text-[var(--orokin-text-dim)]">{filtered.length} ta topildi</span>
+        <span className="ml-auto self-center font-mono text-xs text-[var(--color-t3)]">
+          {filtered.length} ta topildi
+        </span>
       </div>
 
       <div ref={parentRef} className="flex-1 overflow-y-auto">

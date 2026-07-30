@@ -58,14 +58,16 @@ function NightwaveTracker(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--orokin-text-dim)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
       </div>
     )
   }
 
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
-      <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Nightwave</h1>
+      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+        Nightwave
+      </h1>
 
       <div className="grid grid-cols-2 gap-4">
         <ResetCountdown label="Kunlik reset" target={dailyTarget} />
@@ -78,27 +80,32 @@ function NightwaveTracker(): React.JSX.Element {
           placeholder="Challenge nomi"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="chamfer flex-1 border border-[var(--orokin-border)] bg-[var(--orokin-panel)] px-3 py-2 text-sm"
+          className="flex-1 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         />
         <select
           value={type}
           onChange={(e) => setType(e.target.value as NightwaveChallengeType)}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         >
           <option value="daily">Kunlik</option>
           <option value="weekly">Haftalik</option>
           <option value="season">Mavsum</option>
         </select>
-        <button type="submit" className="chamfer bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black">
+        <button
+          type="submit"
+          className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
+        >
           Qo&apos;shish
         </button>
       </form>
 
       {(['daily', 'weekly', 'season'] as const).map((groupType) => (
-        <div key={groupType} className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-          <h2 className="mb-2 text-sm font-semibold text-[var(--orokin-cyan)] uppercase">{TYPE_LABELS[groupType]}</h2>
+        <div key={groupType} className="surface-base rounded-lg p-4">
+          <h2 className="mb-2 font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
+            {TYPE_LABELS[groupType]}
+          </h2>
           {grouped[groupType].length === 0 && (
-            <p className="text-sm text-[var(--orokin-text-dim)]">Hali challenge qo&apos;shilmagan.</p>
+            <p className="text-sm text-[var(--color-t2)]">Hali challenge qo&apos;shilmagan.</p>
           )}
           <ul className="space-y-1">
             {grouped[groupType].map((challenge) => (
@@ -109,14 +116,14 @@ function NightwaveTracker(): React.JSX.Element {
                     checked={challenge.completed}
                     onChange={(e) => toggleCompleted(challenge.id, e.target.checked)}
                   />
-                  <span className={challenge.completed ? 'text-[var(--orokin-text-dim)] line-through' : ''}>
+                  <span className={challenge.completed ? 'text-[var(--color-t2)] line-through' : ''}>
                     {challenge.title}
                   </span>
                 </label>
                 <button
                   type="button"
                   onClick={() => removeChallenge(challenge.id)}
-                  className="text-[var(--orokin-text-dim)] hover:text-red-400"
+                  className="text-[var(--color-t2)] hover:text-[var(--color-danger)]"
                 >
                   ✕
                 </button>

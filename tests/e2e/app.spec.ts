@@ -7,7 +7,7 @@ test('ilova ishga tushadi, master data va schema versiyasini yuklaydi', async ()
   const app = await electron.launch({ args: [join(__dirname, '../../out/main/index.js')] })
   const window = await app.firstWindow()
 
-  await window.waitForSelector('text=Tenno Log', { timeout: 15000 })
+  await window.waitForSelector('text=MY TENNO', { timeout: 15000 })
 
   const schemaVersion = await window.evaluate(() => (window as unknown as { api: { getSchemaVersion(): Promise<number> } }).api.getSchemaVersion())
   expect(schemaVersion).toBeGreaterThanOrEqual(1)

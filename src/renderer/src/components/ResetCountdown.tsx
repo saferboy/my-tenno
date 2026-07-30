@@ -27,9 +27,9 @@ function ResetCountdown({ label, target }: ResetCountdownProps): React.JSX.Eleme
   }, [])
 
   return (
-    <div className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
-      <p className="text-xs tracking-wide text-[var(--orokin-text-dim)] uppercase">{label}</p>
-      <p className="mt-1 font-mono text-xl text-[var(--orokin-cyan)]">{formatRemaining(target - now)}</p>
+    <div className="surface-base rounded-lg p-4">
+      <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">{label}</p>
+      <p className="mt-1 font-mono text-xl text-[var(--color-tenno-cyan)]">{formatRemaining(target - now)}</p>
     </div>
   )
 }

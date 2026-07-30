@@ -53,24 +53,23 @@ function RivenTracker(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--orokin-text-dim)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
       </div>
     )
   }
 
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
-      <h1 className="text-xl font-bold tracking-wide text-[var(--orokin-gold)] uppercase">Riven Mod Tracker</h1>
+      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+        Riven Mod Tracker
+      </h1>
 
-      <form
-        onSubmit={handleAdd}
-        className="chamfer flex flex-col gap-2 border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4"
-      >
+      <form onSubmit={handleAdd} className="surface-base flex flex-col gap-2 rounded-lg p-4">
         <select
           value={weaponUniqueName}
           onChange={(e) => setWeaponUniqueName(e.target.value)}
           required
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         >
           <option value="">Qurolni tanlang...</option>
           {weapons.map((weapon) => (
@@ -83,17 +82,17 @@ function RivenTracker(): React.JSX.Element {
           placeholder="Statlar (har biri yangi qatorda)"
           value={statsInput}
           onChange={(e) => setStatsInput(e.target.value)}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         />
         <textarea
           placeholder="Maqsad (ixtiyoriy)"
           value={targetNotes}
           onChange={(e) => setTargetNotes(e.target.value)}
-          className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-bg)] px-3 py-2 text-sm"
+          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         />
         <button
           type="submit"
-          className="chamfer self-start bg-[var(--orokin-gold)] px-4 py-2 text-sm font-semibold text-black"
+          className="self-start rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
           Riven qo&apos;shish
         </button>
@@ -103,16 +102,16 @@ function RivenTracker(): React.JSX.Element {
         {rivens.map((riven) => {
           const weapon = riven.weaponUniqueName ? weaponByUniqueName.get(riven.weaponUniqueName) : undefined
           return (
-            <div key={riven.id} className="chamfer border border-[var(--orokin-border)] bg-[var(--orokin-panel)] p-4">
+            <div key={riven.id} className="surface-base rounded-lg p-4">
               <div className="mb-2 flex items-start justify-between">
                 <h3 className="font-semibold">{riven.weaponName}</h3>
-                <span className="text-xs text-[var(--orokin-text-dim)]">
+                <span className="text-xs text-[var(--color-t2)]">
                   Disp: {weapon ? String(weapon.disposition ?? '-') : '-'}
                 </span>
               </div>
 
               {riven.stats.length > 0 && (
-                <ul className="mb-2 space-y-0.5 text-sm text-[var(--orokin-cyan)]">
+                <ul className="mb-2 space-y-0.5 text-sm text-[var(--color-tenno-cyan)]">
                   {riven.stats.map((stat, index) => (
                     <li key={index}>{stat}</li>
                   ))}
@@ -120,7 +119,7 @@ function RivenTracker(): React.JSX.Element {
               )}
 
               {riven.targetNotes && (
-                <p className="mb-2 text-xs text-[var(--orokin-text-dim)]">Maqsad: {riven.targetNotes}</p>
+                <p className="mb-2 text-xs text-[var(--color-t2)]">Maqsad: {riven.targetNotes}</p>
               )}
 
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
@@ -129,7 +128,7 @@ function RivenTracker(): React.JSX.Element {
                   <button
                     type="button"
                     onClick={() => updateRiven(riven.id, { rerollCount: riven.rerollCount + 1 })}
-                    className="chamfer border border-[var(--orokin-border)] px-2 py-0.5 text-xs hover:bg-[var(--orokin-border)]"
+                    className="rounded border border-[var(--color-void-border)] px-2 py-0.5 text-xs hover:bg-[var(--color-void-border)]"
                   >
                     +1
                   </button>
@@ -145,7 +144,7 @@ function RivenTracker(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => removeRiven(riven.id)}
-                  className="text-[var(--orokin-text-dim)] hover:text-red-400"
+                  className="text-[var(--color-t2)] hover:text-[var(--color-danger)]"
                 >
                   O&apos;chirish
                 </button>
