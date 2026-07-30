@@ -13,7 +13,8 @@ const CATEGORIES = [
   'Arch-Melee',
   'Sentinels',
   'SentinelWeapons',
-  'Pets'
+  'Pets',
+  'Quests'
 ]
 
 let cached: MasterDataPayload | null = null

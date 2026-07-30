@@ -9,6 +9,7 @@ import { getAllRivenMods, addRivenMod, updateRivenMod, deleteRivenMod } from '..
 import { getAllCompanionStatuses, setDnaStability } from '../db/companionStatus'
 import { getAllFocusSchools, updateFocusSchool } from '../db/focusSchool'
 import { getUserProfile, updateUserProfile } from '../db/userProfile'
+import { getAllQuestStatuses, setQuestCompleted } from '../db/questStatus'
 import type {
   ItemStatusPatch,
   NightwaveChallengeInput,
@@ -131,6 +132,15 @@ export function registerIpcHandlers(): void {
     return updateFocusSchool(schoolName, patch)
   })
 
+  // Quest Timeline - kvest bajarilganlik holati (mission_status'ga o'xshash).
+  handle('questStatus:getAll', () => {
+    return getAllQuestStatuses()
+  })
+
+  handle('questStatus:update', (_event, questUniqueName: string, completed: boolean) => {
+    return setQuestCompleted(questUniqueName, completed)
+  })
+
   // Foydalanuvchi profili (Mastery Rank) - Warframe API bermaydigan
   // ma'lumot, qo'lda kiritiladi.
   handle('userProfile:get', () => {
@@ -195,7 +205,8 @@ export function registerIpcHandlers(): void {
       rivenMods: db.prepare('SELECT * FROM riven_mod').all(),
       companionStatuses: db.prepare('SELECT * FROM companion_status').all(),
       focusSchools: db.prepare('SELECT * FROM focus_school').all(),
-      userProfile: db.prepare('SELECT * FROM user_profile WHERE id = 1').get()
+      userProfile: db.prepare('SELECT * FROM user_profile WHERE id = 1').get(),
+      questStatuses: db.prepare('SELECT * FROM quest_status').all()
     }
 
     const result = await dialog.showSaveDialog({

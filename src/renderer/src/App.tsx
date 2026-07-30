@@ -6,6 +6,7 @@ import Dashboard from './views/Dashboard'
 import WeaponsPage from './views/WeaponsPage'
 import WarframesPage from './views/WarframesPage'
 import MissionTracker from './views/MissionTracker'
+import QuestTimeline from './views/QuestTimeline'
 import NightwaveTracker from './views/NightwaveTracker'
 import RivenTracker from './views/RivenTracker'
 import CompanionFocus from './views/CompanionFocus'
@@ -29,6 +30,7 @@ const VIEWS: Record<View, () => React.JSX.Element> = {
   weapons: WeaponsPage,
   warframes: WarframesPage,
   missions: MissionTracker,
+  quests: QuestTimeline,
   nightwave: NightwaveTracker,
   riven: RivenTracker,
   companion: CompanionFocus,

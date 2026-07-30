@@ -90,3 +90,9 @@ export interface UserProfile {
 export interface UserProfilePatch {
   masteryRank?: number
 }
+
+export interface QuestStatus {
+  questUniqueName: string
+  completed: boolean
+  updatedAt: string
+}

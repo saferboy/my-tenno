@@ -5,6 +5,7 @@ import {
   Shield,
   Bot,
   Globe,
+  Milestone,
   Scroll,
   Zap,
   Settings as SettingsIcon
@@ -16,6 +17,7 @@ export type View =
   | 'weapons'
   | 'warframes'
   | 'missions'
+  | 'quests'
   | 'nightwave'
   | 'riven'
   | 'companion'
@@ -54,6 +56,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'JOURNEY',
     items: [
       { view: 'missions', label: 'Missiyalar', icon: Globe },
+      { view: 'quests', label: 'Kvestlar', icon: Milestone },
       { view: 'nightwave', label: 'Nightwave', icon: Scroll },
       { view: 'riven', label: 'Rivenlar', icon: Zap }
     ]

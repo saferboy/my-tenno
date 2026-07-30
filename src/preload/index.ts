@@ -14,7 +14,8 @@ import type {
   FocusSchool,
   FocusSchoolPatch,
   UserProfile,
-  UserProfilePatch
+  UserProfilePatch,
+  QuestStatus
 } from '../main/db/types'
 import type { BackupInfo } from '../main/db/backup'
 import type { SharePayload } from '../main/shareCode'
@@ -56,6 +57,10 @@ const api = {
   getFocusSchools: (): Promise<FocusSchool[]> => ipcRenderer.invoke('focusSchool:getAll'),
   updateFocusSchool: (schoolName: string, patch: FocusSchoolPatch): Promise<FocusSchool> =>
     ipcRenderer.invoke('focusSchool:update', schoolName, patch),
+
+  getQuestStatuses: (): Promise<QuestStatus[]> => ipcRenderer.invoke('questStatus:getAll'),
+  updateQuestStatus: (questUniqueName: string, completed: boolean): Promise<QuestStatus> =>
+    ipcRenderer.invoke('questStatus:update', questUniqueName, completed),
 
   getUserProfile: (): Promise<UserProfile> => ipcRenderer.invoke('userProfile:get'),
   updateUserProfile: (patch: UserProfilePatch): Promise<UserProfile> =>
