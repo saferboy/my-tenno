@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard,
   Crosshair,
+  Shield,
   Bot,
   Globe,
   Scroll,
@@ -10,7 +11,15 @@ import {
 } from 'lucide-react'
 import { useUserProfileStore } from '../store/useUserProfileStore'
 
-export type View = 'dashboard' | 'arsenal' | 'missions' | 'nightwave' | 'riven' | 'companion' | 'settings'
+export type View =
+  | 'dashboard'
+  | 'weapons'
+  | 'warframes'
+  | 'missions'
+  | 'nightwave'
+  | 'riven'
+  | 'companion'
+  | 'settings'
 
 interface SidebarProps {
   active: View
@@ -36,7 +45,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'ARSENAL',
     items: [
-      { view: 'arsenal', label: 'Arsenal', icon: Crosshair },
+      { view: 'weapons', label: 'Weapons', icon: Crosshair },
+      { view: 'warframes', label: 'Warframes', icon: Shield },
       { view: 'companion', label: 'Companion', icon: Bot }
     ]
   },

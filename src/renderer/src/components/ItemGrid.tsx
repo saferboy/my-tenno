@@ -1,29 +1,37 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { useAppStore } from '../store/useAppStore'
+import Fuse from 'fuse.js'
+import { useAppStore, type StatusFilter } from '../store/useAppStore'
 import { filterItems } from '../store/selectors'
-import ItemCard from '../components/ItemCard'
-import ItemDrawer from '../components/ItemDrawer'
+import ItemCard from './ItemCard'
+import ItemDrawer from './ItemDrawer'
 import type { WarframeItem } from '../../../main/masterData/types'
 
 const CARD_MIN_WIDTH = 160
 const CARD_HEIGHT = 196
 const GAP = 12
 
-// TDD 5.2: 1000+ elementni bir vaqtda DOM'ga chiqarmaslik uchun row-bazaviy
-// virtualization (@tanstack/react-virtual).
-function Arsenal(): React.JSX.Element {
-  const items = useAppStore((s) => s.items)
-  const fuse = useAppStore((s) => s.fuse)
+interface ItemGridProps {
+  title: string
+  categoryScope: Set<string>
+}
+
+// Arsenal'dan ajratilgan (Weapons/Warframes sahifalari uchun) qayta
+// ishlatiladigan virtualized grid - 1000+ elementni bir vaqtda DOM'ga
+// chiqarmaslik uchun row-bazaviy virtualization (@tanstack/react-virtual).
+// Qidiruv/filtr holati bu komponentga xos (mahalliy) - shu bilan har
+// sahifa o'z filtrini mustaqil saqlaydi.
+function ItemGrid({ title, categoryScope }: ItemGridProps): React.JSX.Element {
+  const allItems = useAppStore((s) => s.items)
   const statusByItem = useAppStore((s) => s.statusByItem)
-  const searchQuery = useAppStore((s) => s.searchQuery)
-  const categoryFilter = useAppStore((s) => s.categoryFilter)
-  const statusFilter = useAppStore((s) => s.statusFilter)
-  const setSearchQuery = useAppStore((s) => s.setSearchQuery)
-  const setCategoryFilter = useAppStore((s) => s.setCategoryFilter)
-  const setStatusFilter = useAppStore((s) => s.setStatusFilter)
   const updateStatus = useAppStore((s) => s.updateStatus)
 
+  const scopedItems = useMemo(() => allItems.filter((i) => categoryScope.has(i.category)), [allItems, categoryScope])
+  const fuse = useMemo(() => new Fuse(scopedItems, { keys: ['name', 'category'], threshold: 0.3 }), [scopedItems])
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<WarframeItem | null>(null)
   const [containerWidth, setContainerWidth] = useState(800)
   const parentRef = useRef<HTMLDivElement>(null)
@@ -40,11 +48,20 @@ function Arsenal(): React.JSX.Element {
     return () => observer.disconnect()
   }, [])
 
-  const categories = useMemo(() => Array.from(new Set(items.map((i) => i.category))).sort(), [items])
+  const categories = useMemo(() => Array.from(new Set(scopedItems.map((i) => i.category))).sort(), [scopedItems])
 
   const filtered = useMemo(
-    () => filterItems({ items, fuse, searchQuery, categoryFilter, statusFilter, statusByItem }),
-    [items, fuse, searchQuery, categoryFilter, statusFilter, statusByItem]
+    () => filterItems({ items: scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem }),
+    [scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem]
+  )
+
+  const owned = useMemo(
+    () => scopedItems.filter((i) => statusByItem[i.uniqueName]?.owned).length,
+    [scopedItems, statusByItem]
+  )
+  const maxed = useMemo(
+    () => scopedItems.filter((i) => statusByItem[i.uniqueName]?.maxed).length,
+    [scopedItems, statusByItem]
   )
 
   const columns = Math.max(1, Math.floor(containerWidth / (CARD_MIN_WIDTH + GAP)))
@@ -61,9 +78,25 @@ function Arsenal(): React.JSX.Element {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-8">
-      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Arsenal
-      </h1>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+          {title}
+        </h1>
+        <div className="flex gap-4 font-mono text-xs text-[var(--color-t3)]">
+          <span>
+            OWNED{' '}
+            <span className="text-[var(--color-tenno-cyan)]">
+              {owned}/{scopedItems.length}
+            </span>
+          </span>
+          <span>
+            MAXED{' '}
+            <span className="text-[var(--color-tenno-gold)]">
+              {maxed}/{scopedItems.length}
+            </span>
+          </span>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <input
@@ -73,18 +106,20 @@ function Arsenal(): React.JSX.Element {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         />
-        <select
-          value={categoryFilter ?? ''}
-          onChange={(e) => setCategoryFilter(e.target.value || null)}
-          className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
-        >
-          <option value="">Barcha turlar</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+        {categories.length > 1 && (
+          <select
+            value={categoryFilter ?? ''}
+            onChange={(e) => setCategoryFilter(e.target.value || null)}
+            className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
+          >
+            <option value="">Barcha turlar</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        )}
         <div className="flex gap-1">
           {(['all', 'owned', 'maxed', 'not-owned'] as const).map((filter) => (
             <button
@@ -151,4 +186,4 @@ function Arsenal(): React.JSX.Element {
   )
 }
 
-export default Arsenal
+export default ItemGrid

@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useMissionStore } from '../store/useMissionStore'
+import CompletionRing from '../components/CompletionRing'
+import ProgressBar from '../components/ProgressBar'
 
 // TDD 5.3: "Kategoriyalar bo'yicha ajratilgan checkbox'lar ro'yxati" -
 // warframe-items'da Void Fissures/Steel Path kabi o'yin-ichi teglar
@@ -32,6 +34,12 @@ function MissionTracker(): React.JSX.Element {
       .sort((a, b) => a.planet.localeCompare(b.planet))
   }, [nodes])
 
+  const overallCompleted = useMemo(
+    () => nodes.filter((n) => statusByNode[n.uniqueName]?.completed).length,
+    [nodes, statusByNode]
+  )
+  const overallPct = nodes.length ? overallCompleted / nodes.length : 0
+
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -46,17 +54,33 @@ function MissionTracker(): React.JSX.Element {
         Missiyalar
       </h1>
 
+      <div className="surface-base rounded-lg p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
+            Umumiy Star Chart
+          </p>
+          <span className="font-mono text-xs text-[var(--color-tenno-cyan)]">
+            {overallCompleted}/{nodes.length} ({Math.round(overallPct * 100)}%)
+          </span>
+        </div>
+        <ProgressBar value={overallPct} />
+      </div>
+
       {groups.map(({ planet, nodes: planetNodes }) => {
         const completedCount = planetNodes.filter((n) => statusByNode[n.uniqueName]?.completed).length
+        const planetPct = planetNodes.length ? (completedCount / planetNodes.length) * 100 : 0
         return (
           <div key={planet} className="surface-base rounded-lg p-4">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
                 {planet}
               </h2>
-              <span className="font-mono text-xs text-[var(--color-t3)]">
-                {completedCount}/{planetNodes.length} bajarildi
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-[var(--color-t3)]">
+                  {completedCount}/{planetNodes.length}
+                </span>
+                <CompletionRing percent={planetPct} />
+              </div>
             </div>
             <ul className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3">
               {planetNodes.map((node) => {

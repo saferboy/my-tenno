@@ -13,14 +13,8 @@ interface AppState {
   dataVersion: string | null
   schemaVersion: number | null
   statusByItem: Record<string, ItemStatus>
-  searchQuery: string
-  categoryFilter: string | null
-  statusFilter: StatusFilter
   fuse: Fuse<WarframeItem> | null
   init: () => Promise<void>
-  setSearchQuery: (query: string) => void
-  setCategoryFilter: (category: string | null) => void
-  setStatusFilter: (status: StatusFilter) => void
   updateStatus: (itemUniqueName: string, patch: ItemStatusPatch) => Promise<void>
 }
 
@@ -33,9 +27,6 @@ export const useAppStore = create<AppState>((set) => ({
   dataVersion: null,
   schemaVersion: null,
   statusByItem: {},
-  searchQuery: '',
-  categoryFilter: null,
-  statusFilter: 'all',
   fuse: null,
 
   init: async () => {
@@ -68,10 +59,6 @@ export const useAppStore = create<AppState>((set) => ({
       set({ error: error instanceof Error ? error.message : String(error), loading: false })
     }
   },
-
-  setSearchQuery: (query) => set({ searchQuery: query }),
-  setCategoryFilter: (category) => set({ categoryFilter: category }),
-  setStatusFilter: (status) => set({ statusFilter: status }),
 
   updateStatus: async (itemUniqueName, patch) => {
     try {
