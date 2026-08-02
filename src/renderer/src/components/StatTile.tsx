@@ -20,9 +20,11 @@ function StatTile({ label, value, sub, accentColor = '#4ecdc4', icon: Icon }: St
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="mb-1 flex items-center justify-between">
-        <span className="font-mono text-[10px] tracking-wider text-[var(--color-t3)] uppercase">{label}</span>
-        {Icon && <Icon size={12} style={{ color: `${accentColor}99` }} />}
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <span className="min-w-0 font-mono text-[10px] tracking-wider text-[var(--color-t3)] uppercase break-words">
+          {label}
+        </span>
+        {Icon && <Icon size={12} className="shrink-0" style={{ color: `${accentColor}99` }} />}
       </div>
       <div className="font-display text-xl leading-none font-extrabold text-[var(--color-t1)]">{value}</div>
       {sub && <div className="mt-0.5 text-[10px] text-[var(--color-t3)]">{sub}</div>}

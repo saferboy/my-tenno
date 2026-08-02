@@ -10,7 +10,7 @@ function ProgressBar({ value, height = 8 }: ProgressBarProps): React.JSX.Element
 
   return (
     <div
-      className="w-full overflow-hidden rounded-full bg-[var(--color-void-border)]"
+      className="w-full min-w-0 overflow-hidden rounded-full bg-[var(--color-void-border)]"
       style={{ height }}
     >
       <div className="progress-bar h-full rounded-full" style={{ width: `${pct}%` }} />

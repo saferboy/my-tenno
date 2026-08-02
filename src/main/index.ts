@@ -21,8 +21,8 @@ process.on('unhandledRejection', (error) => logError('unhandledRejection', error
 function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1125,
+    height: 840,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -31,7 +31,12 @@ function createWindow(): BrowserWindow {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
-      webSecurity: true
+      webSecurity: true,
+      // UI umumiy elementlari (matn, ikonka, bo'shliqlar) kichik ekranlarda
+      // o'qilishi qiyin edi - butun sahifani Chromium darajasida kattalashtiramiz
+      // (komponentlarni birma-bir o'zgartirishdan ko'ra ishonchliroq, chunki
+      // rem-asoslangan va qattiq px qiymatlar birga masshtablanadi).
+      zoomFactor: 1.25
     }
   })
 
