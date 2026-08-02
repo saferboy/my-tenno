@@ -3,6 +3,7 @@ import Fuse from 'fuse.js'
 import type { WarframeItem } from '../../../main/masterData/types'
 import type { ItemStatus, ItemStatusPatch } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 export type StatusFilter = 'all' | 'owned' | 'maxed' | 'not-owned'
 
@@ -56,7 +57,7 @@ export const useAppStore = create<AppState>((set) => ({
         loading: false
       })
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : String(error), loading: false })
+      set({ error: describeError(error), loading: false })
     }
   },
 
@@ -67,7 +68,7 @@ export const useAppStore = create<AppState>((set) => ({
         statusByItem: { ...state.statusByItem, [itemUniqueName]: updated }
       }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

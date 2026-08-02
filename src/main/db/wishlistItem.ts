@@ -48,7 +48,7 @@ export function updateWishlistItem(id: number, patch: WishlistItemPatch): Wishli
   const db = getDb()
   const existing = db.prepare('SELECT * FROM wishlist_item WHERE id = ?').get(id) as WishlistItemRow | undefined
   if (!existing) {
-    throw new Error(`Wishlist band topilmadi: ${id}`)
+    throw new Error(`ERR_WISHLIST_NOT_FOUND:${id}`)
   }
 
   const merged = {

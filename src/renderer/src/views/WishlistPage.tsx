@@ -3,6 +3,7 @@ import { useAppStore } from '../store/useAppStore'
 import { useWishlistStore } from '../store/useWishlistStore'
 import { useItemImage } from '../hooks/useItemImage'
 import { MY_COLLECTION_CATEGORIES } from '../constants'
+import { useT } from '../i18n/useT'
 import type { WarframeItem } from '../../../main/masterData/types'
 
 function WishlistCard({
@@ -17,6 +18,7 @@ function WishlistCard({
   onDelete: () => void
 }): React.JSX.Element {
   const imageSrc = useItemImage(item?.uniqueName ?? itemName, item?.imageName)
+  const t = useT()
 
   return (
     <div className="surface-base flex items-center gap-3 rounded-lg p-3">
@@ -29,7 +31,9 @@ function WishlistCard({
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-[var(--color-t1)]">{itemName}</p>
-        <p className="truncate text-xs text-[var(--color-t3)]">{item?.category ?? 'Boshqa'}</p>
+        <p className="truncate text-xs text-[var(--color-t3)]">
+          {item?.category ?? t('wishlist.otherCategory')}
+        </p>
         {notes && <p className="mt-1 text-xs text-[var(--color-t2)]">{notes}</p>}
       </div>
       <button
@@ -52,6 +56,7 @@ function WishlistPage(): React.JSX.Element {
   const init = useWishlistStore((s) => s.init)
   const addItem = useWishlistStore((s) => s.addItem)
   const removeItem = useWishlistStore((s) => s.removeItem)
+  const t = useT()
 
   useEffect(() => {
     init()
@@ -87,7 +92,7 @@ function WishlistPage(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </div>
     )
   }
@@ -95,7 +100,7 @@ function WishlistPage(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Wishlist
+        {t('sidebar.nav.wishlist')}
       </h1>
 
       <form onSubmit={handleAdd} className="surface-base flex flex-col gap-2 rounded-lg p-4">
@@ -105,7 +110,7 @@ function WishlistPage(): React.JSX.Element {
           required
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         >
-          <option value="">Narsani tanlang...</option>
+          <option value="">{t('wishlist.selectPlaceholder')}</option>
           {pickable.map((item) => (
             <option key={item.uniqueName} value={item.uniqueName}>
               {item.name} ({item.category})
@@ -113,7 +118,7 @@ function WishlistPage(): React.JSX.Element {
           ))}
         </select>
         <textarea
-          placeholder="Izoh (ixtiyoriy)"
+          placeholder={t('wishlist.notesPlaceholder')}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
@@ -122,11 +127,13 @@ function WishlistPage(): React.JSX.Element {
           type="submit"
           className="self-start rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
-          Wishlist&apos;ga qo&apos;shish
+          {t('wishlist.add')}
         </button>
       </form>
 
-      {wishlistItems.length === 0 && <p className="text-sm text-[var(--color-t2)]">Ro&apos;yxat hozircha bo&apos;sh.</p>}
+      {wishlistItems.length === 0 && (
+        <p className="text-sm text-[var(--color-t2)]">{t('wishlist.empty')}</p>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-2">
         {wishlistItems.map((entry) => (

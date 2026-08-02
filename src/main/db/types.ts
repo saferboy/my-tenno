@@ -82,13 +82,17 @@ export interface FocusSchoolPatch {
   notes?: string | null
 }
 
+export type Locale = 'uz' | 'ru' | 'en'
+
 export interface UserProfile {
   masteryRank: number
+  locale: Locale
   updatedAt: string
 }
 
 export interface UserProfilePatch {
   masteryRank?: number
+  locale?: Locale
 }
 
 export interface QuestStatus {

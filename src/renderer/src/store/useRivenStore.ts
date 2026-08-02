@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { RivenMod, RivenModInput, RivenModPatch } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface RivenState {
   loading: boolean
@@ -21,7 +22,7 @@ export const useRivenStore = create<RivenState>((set) => ({
       set({ rivens, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -30,7 +31,7 @@ export const useRivenStore = create<RivenState>((set) => ({
       const riven = await window.api.addRivenMod(input)
       set((state) => ({ rivens: [riven, ...state.rivens] }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -39,7 +40,7 @@ export const useRivenStore = create<RivenState>((set) => ({
       const updated = await window.api.updateRivenMod(id, patch)
       set((state) => ({ rivens: state.rivens.map((r) => (r.id === id ? updated : r)) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -48,7 +49,7 @@ export const useRivenStore = create<RivenState>((set) => ({
       await window.api.deleteRivenMod(id)
       set((state) => ({ rivens: state.rivens.filter((r) => r.id !== id) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

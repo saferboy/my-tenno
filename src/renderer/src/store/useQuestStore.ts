@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { QuestStatus } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface QuestState {
   loading: boolean
@@ -25,7 +26,7 @@ export const useQuestStore = create<QuestState>((set) => ({
       set({ statusByQuest, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -34,7 +35,7 @@ export const useQuestStore = create<QuestState>((set) => ({
       const updated = await window.api.updateQuestStatus(questUniqueName, completed)
       set((state) => ({ statusByQuest: { ...state.statusByQuest, [questUniqueName]: updated } }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

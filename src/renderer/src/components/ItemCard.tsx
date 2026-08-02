@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import type { WarframeItem } from '../../../main/masterData/types'
 import type { ItemStatus } from '../../../main/db/types'
 import { useItemImage } from '../hooks/useItemImage'
+import { useT } from '../i18n/useT'
 import Badge from './Badge'
 
 interface ItemCardProps {
@@ -22,6 +23,7 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
   const wasMaxed = useRef(Boolean(status?.maxed))
   const [pulse, setPulse] = useState(false)
   const imageSrc = useItemImage(item.uniqueName, item.imageName)
+  const t = useT()
 
   // TDD 6.4: Qurol "Max" qilinganda ramka oqdan oltin rangga o'tib, yengil
   // pulse effekti beradi - faqat holat aynan shu zumda o'zgarganda ishga
@@ -55,7 +57,7 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
     >
       <div className="flex flex-1 items-center justify-center overflow-hidden py-1">
         {imageSrc ? (
-          <img src={imageSrc} alt={item.name} draggable={false} className="max-h-24 max-w-full object-contain" />
+          <img src={imageSrc} alt={item.name} draggable={false} className="h-full w-full object-contain" />
         ) : (
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-void-border)] text-xl font-bold text-[var(--color-t2)]">
             {item.name.charAt(0)}
@@ -67,7 +69,7 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
         <p className="text-xs text-[var(--color-t2)]">{item.category}</p>
       </div>
       {status?.maxed && <Badge tone="gold">MAX</Badge>}
-      {!status?.maxed && status?.owned && <Badge tone="cyan">Owned</Badge>}
+      {!status?.maxed && status?.owned && <Badge tone="cyan">{t('common.owned')}</Badge>}
     </motion.button>
   )
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useMissionStore } from '../store/useMissionStore'
 import CompletionRing from '../components/CompletionRing'
 import ProgressBar from '../components/ProgressBar'
+import { useT } from '../i18n/useT'
 
 // TDD 5.3: "Kategoriyalar bo'yicha ajratilgan checkbox'lar ro'yxati" -
 // warframe-items'da Void Fissures/Steel Path kabi o'yin-ichi teglar
@@ -14,6 +15,7 @@ function MissionTracker(): React.JSX.Element {
   const statusByNode = useMissionStore((s) => s.statusByNode)
   const init = useMissionStore((s) => s.init)
   const toggleCompleted = useMissionStore((s) => s.toggleCompleted)
+  const t = useT()
 
   useEffect(() => {
     init()
@@ -43,7 +45,7 @@ function MissionTracker(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </div>
     )
   }
@@ -51,13 +53,13 @@ function MissionTracker(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Missiyalar
+        {t('sidebar.nav.missions')}
       </h1>
 
       <div className="surface-base rounded-lg p-4">
         <div className="mb-2 flex items-center justify-between">
           <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
-            Umumiy Star Chart
+            {t('missionTracker.overallStarChart')}
           </p>
           <span className="font-mono text-xs text-[var(--color-tenno-cyan)]">
             {overallCompleted}/{nodes.length} ({Math.round(overallPct * 100)}%)

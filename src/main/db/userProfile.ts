@@ -1,15 +1,17 @@
 import { getDb } from './index'
-import type { UserProfile, UserProfilePatch } from './types'
+import type { Locale, UserProfile, UserProfilePatch } from './types'
 
 interface UserProfileRow {
   id: number
   mastery_rank: number
+  locale: Locale
   updated_at: string
 }
 
 function toUserProfile(row: UserProfileRow): UserProfile {
   return {
     masteryRank: row.mastery_rank,
+    locale: row.locale,
     updatedAt: row.updated_at
   }
 }
@@ -26,12 +28,13 @@ export function updateUserProfile(patch: UserProfilePatch): UserProfile {
   const existing = db.prepare('SELECT * FROM user_profile WHERE id = 1').get() as UserProfileRow
 
   const merged = {
-    masteryRank: patch.masteryRank ?? existing.mastery_rank
+    masteryRank: patch.masteryRank ?? existing.mastery_rank,
+    locale: patch.locale ?? existing.locale
   }
 
-  db.prepare("UPDATE user_profile SET mastery_rank = @masteryRank, updated_at = datetime('now') WHERE id = 1").run(
-    merged
-  )
+  db.prepare(
+    "UPDATE user_profile SET mastery_rank = @masteryRank, locale = @locale, updated_at = datetime('now') WHERE id = 1"
+  ).run(merged)
 
   const row = db.prepare('SELECT * FROM user_profile WHERE id = 1').get() as UserProfileRow
   return toUserProfile(row)

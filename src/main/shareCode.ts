@@ -32,11 +32,11 @@ export function decodeShareCode(code: string): SharePayload {
     const decompressed = gunzipSync(buffer)
     payload = JSON.parse(decompressed.toString('utf-8'))
   } catch {
-    throw new Error("Share Code noto'g'ri yoki buzilgan")
+    throw new Error('ERR_SHARE_CODE_INVALID')
   }
 
   if (!isSharePayload(payload)) {
-    throw new Error("Share Code noto'g'ri yoki buzilgan")
+    throw new Error('ERR_SHARE_CODE_INVALID')
   }
 
   return payload

@@ -57,7 +57,7 @@ export function updateRivenMod(id: number, patch: RivenModPatch): RivenMod {
   const db = getDb()
   const existing = db.prepare('SELECT * FROM riven_mod WHERE id = ?').get(id) as RivenModRow | undefined
   if (!existing) {
-    throw new Error(`Riven topilmadi: ${id}`)
+    throw new Error(`ERR_RIVEN_NOT_FOUND:${id}`)
   }
 
   const merged = {

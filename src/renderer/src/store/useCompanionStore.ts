@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { CompanionStatus, FocusSchool, FocusSchoolPatch } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface CompanionState {
   loading: boolean
@@ -31,7 +32,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
       set({ companionStatusByItem, focusSchools, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -42,7 +43,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
         companionStatusByItem: { ...state.companionStatusByItem, [itemUniqueName]: updated }
       }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -53,7 +54,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
         focusSchools: state.focusSchools.map((school) => (school.schoolName === schoolName ? updated : school))
       }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

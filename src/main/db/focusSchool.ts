@@ -30,7 +30,7 @@ export function updateFocusSchool(schoolName: string, patch: FocusSchoolPatch): 
     .get(schoolName) as FocusSchoolRow | undefined
 
   if (!existing) {
-    throw new Error(`Focus School topilmadi: ${schoolName}`)
+    throw new Error(`ERR_FOCUS_SCHOOL_NOT_FOUND:${schoolName}`)
   }
 
   const merged = {

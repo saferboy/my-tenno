@@ -1,13 +1,29 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Fuse from 'fuse.js'
 import { useAppStore, type StatusFilter } from '../store/useAppStore'
 import { filterItems } from '../store/selectors'
 import ItemCard from './ItemCard'
 import ItemDrawer from './ItemDrawer'
 import Pagination from './Pagination'
+import { useT } from '../i18n/useT'
+import type { TranslationKey } from '../i18n/translations'
 import type { WarframeItem } from '../../../main/masterData/types'
 
-const PAGE_SIZE = 24
+const FILTER_LABELS: Record<StatusFilter, TranslationKey> = {
+  all: 'itemGrid.filter.all',
+  owned: 'itemGrid.filter.owned',
+  maxed: 'itemGrid.filter.maxed',
+  'not-owned': 'itemGrid.filter.notOwned'
+}
+
+// grid-cols-[repeat(auto-fill,minmax(160px,1fr))] va auto-rows-[196px]
+// bilan bir xil o'lchamlar - shu orqali sahifa hajmi (PAGE_SIZE) ustun/qator
+// sonidan hisoblanadi va grid har doim to'liq to'ladi (oxirgi qatorda
+// bo'sh joy yoki pastda ishlatilmagan balandlik qolmaydi).
+const CARD_WIDTH = 160
+const CARD_HEIGHT = 196
+const GRID_GAP = 12
+const DEFAULT_GRID_SIZE = { columns: 6, rows: 4 }
 
 interface ItemGridProps {
   title: string
@@ -19,13 +35,24 @@ interface ItemGridProps {
 // ishlatiladigan grid - sahifalash (24 tadan) bilan, cheksiz scroll o'rniga.
 // Qidiruv/filtr holati bu komponentga xos (mahalliy) - shu bilan har
 // sahifa o'z filtrini mustaqil saqlaydi.
-function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGridProps): React.JSX.Element {
+function ItemGrid({
+  title,
+  categoryScope,
+  defaultStatusFilter = 'all'
+}: ItemGridProps): React.JSX.Element {
   const allItems = useAppStore((s) => s.items)
   const statusByItem = useAppStore((s) => s.statusByItem)
   const updateStatus = useAppStore((s) => s.updateStatus)
+  const t = useT()
 
-  const scopedItems = useMemo(() => allItems.filter((i) => categoryScope.has(i.category)), [allItems, categoryScope])
-  const fuse = useMemo(() => new Fuse(scopedItems, { keys: ['name', 'category'], threshold: 0.3 }), [scopedItems])
+  const scopedItems = useMemo(
+    () => allItems.filter((i) => categoryScope.has(i.category)),
+    [allItems, categoryScope]
+  )
+  const fuse = useMemo(
+    () => new Fuse(scopedItems, { keys: ['name', 'category'], threshold: 0.3 }),
+    [scopedItems]
+  )
 
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
@@ -34,18 +61,43 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
   const [selected, setSelected] = useState<WarframeItem | null>(null)
   const [page, setPage] = useState(0)
 
+  const gridWrapRef = useRef<HTMLDivElement>(null)
+  const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE)
+
+  useLayoutEffect(() => {
+    const el = gridWrapRef.current
+    if (!el) return undefined
+    const measure = (): void => {
+      const { width, height } = el.getBoundingClientRect()
+      const columns = Math.max(1, Math.floor((width + GRID_GAP) / (CARD_WIDTH + GRID_GAP)))
+      const rows = Math.max(1, Math.floor((height + GRID_GAP) / (CARD_HEIGHT + GRID_GAP)))
+      setGridSize((prev) =>
+        prev.columns === columns && prev.rows === rows ? prev : { columns, rows }
+      )
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const PAGE_SIZE = gridSize.columns * gridSize.rows
+
   // Har qanday filtr o'zgarganda 1-sahifaga qaytish - render vaqtida
   // to'g'ridan-to'g'ri (useEffect emas, React'ning "adjusting state" patterni)
   // - aks holda foydalanuvchi filtrlangan (qisqargan) ro'yxatda mavjud
   // bo'lmagan sahifada qolib ketishi mumkin edi.
-  const filterKey = `${searchQuery}|${categoryFilter}|${typeFilter}|${statusFilter}`
+  const filterKey = `${searchQuery}|${categoryFilter}|${typeFilter}|${statusFilter}|${PAGE_SIZE}`
   const [lastFilterKey, setLastFilterKey] = useState(filterKey)
   if (filterKey !== lastFilterKey) {
     setLastFilterKey(filterKey)
     setPage(0)
   }
 
-  const categories = useMemo(() => Array.from(new Set(scopedItems.map((i) => i.category))).sort(), [scopedItems])
+  const categories = useMemo(
+    () => Array.from(new Set(scopedItems.map((i) => i.category))).sort(),
+    [scopedItems]
+  )
 
   // O'yin-ichi Arsenal'dagi kabi ikki bosqichli filtr: avval slot (Primary/
   // Secondary/...), so'ng shu slot ichidagi qurol turi (Rifle/Shotgun/Bow/
@@ -56,12 +108,22 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
     [scopedItems, categoryFilter]
   )
   const types = useMemo(
-    () => Array.from(new Set(itemsInCategory.map((i) => i.type).filter((t): t is string => Boolean(t)))).sort(),
+    () =>
+      Array.from(
+        new Set(itemsInCategory.map((i) => i.type).filter((t): t is string => Boolean(t)))
+      ).sort(),
     [itemsInCategory]
   )
 
   const filtered = useMemo(() => {
-    const byStandardFilters = filterItems({ items: scopedItems, fuse, searchQuery, categoryFilter, statusFilter, statusByItem })
+    const byStandardFilters = filterItems({
+      items: scopedItems,
+      fuse,
+      searchQuery,
+      categoryFilter,
+      statusFilter,
+      statusByItem
+    })
     return typeFilter ? byStandardFilters.filter((i) => i.type === typeFilter) : byStandardFilters
   }, [scopedItems, fuse, searchQuery, categoryFilter, typeFilter, statusFilter, statusByItem])
 
@@ -87,13 +149,13 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
         </h1>
         <div className="flex gap-4 font-mono text-xs text-[var(--color-t3)]">
           <span>
-            OWNED{' '}
+            {t('itemGrid.ownedStat')}{' '}
             <span className="text-[var(--color-tenno-cyan)]">
               {owned}/{scopedItems.length}
             </span>
           </span>
           <span>
-            MAXED{' '}
+            {t('itemGrid.maxedStat')}{' '}
             <span className="text-[var(--color-tenno-gold)]">
               {maxed}/{scopedItems.length}
             </span>
@@ -104,7 +166,7 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="text"
-          placeholder="Qidirish..."
+          placeholder={t('common.search')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
@@ -118,7 +180,7 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
             }}
             className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
           >
-            <option value="">Barcha kategoriyalar</option>
+            <option value="">{t('common.allCategories')}</option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -132,7 +194,7 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
             onChange={(e) => setTypeFilter(e.target.value || null)}
             className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
           >
-            <option value="">Barcha turlar</option>
+            <option value="">{t('common.allTypes')}</option>
             {types.map((type) => (
               <option key={type} value={type}>
                 {type}
@@ -152,24 +214,38 @@ function ItemGrid({ title, categoryScope, defaultStatusFilter = 'all' }: ItemGri
                   : 'border border-[var(--color-void-border)] text-[var(--color-t2)] hover:text-[var(--color-t1)]'
               }`}
             >
-              {filter}
+              {t(FILTER_LABELS[filter])}
             </button>
           ))}
         </div>
         <span className="ml-auto self-center font-mono text-xs text-[var(--color-t3)]">
-          {filtered.length} ta topildi
+          {t('common.resultsFound', { count: filtered.length })}
         </span>
       </div>
 
-      <div className="grid auto-rows-[196px] grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
-        {pageItems.map((item) => (
-          <ItemCard
-            key={item.uniqueName}
-            item={item}
-            status={statusByItem[item.uniqueName]}
-            onClick={() => setSelected(item)}
-          />
-        ))}
+      <div ref={gridWrapRef} className="min-h-0 flex-1">
+        {filtered.length === 0 ? (
+          <div className="flex h-full items-center justify-center">
+            <p className="text-sm text-[var(--color-t2)]">{t('common.nothingFound')}</p>
+          </div>
+        ) : (
+          <div
+            className="grid h-full gap-3"
+            style={{
+              gridTemplateColumns: `repeat(${gridSize.columns}, minmax(0, 1fr))`,
+              gridTemplateRows: `repeat(${gridSize.rows}, minmax(0, 1fr))`
+            }}
+          >
+            {pageItems.map((item) => (
+              <ItemCard
+                key={item.uniqueName}
+                item={item}
+                status={statusByItem[item.uniqueName]}
+                onClick={() => setSelected(item)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <Pagination page={page} pageCount={pageCount} onChange={setPage} />

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNightwaveStore } from '../store/useNightwaveStore'
 import ResetCountdown from '../components/ResetCountdown'
+import { useT } from '../i18n/useT'
+import type { TranslationKey } from '../i18n/translations'
 import type { NightwaveChallengeType } from '../../../main/db/types'
 
 function getNextUtcMidnight(): number {
@@ -17,10 +19,10 @@ function getNextWeeklyReset(): number {
   return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilMonday, 0, 0, 0)
 }
 
-const TYPE_LABELS: Record<NightwaveChallengeType, string> = {
-  daily: 'Kunlik',
-  weekly: 'Haftalik',
-  season: 'Mavsum'
+const TYPE_LABEL_KEYS: Record<NightwaveChallengeType, TranslationKey> = {
+  daily: 'nightwave.type.daily',
+  weekly: 'nightwave.type.weekly',
+  season: 'nightwave.type.season'
 }
 
 // TDD 5.4: Nightwave uchun rasmiy jonli API yo'q, shuning uchun challenge'lar
@@ -37,6 +39,7 @@ function NightwaveTracker(): React.JSX.Element {
   const [weeklyTarget] = useState(getNextWeeklyReset)
   const [title, setTitle] = useState('')
   const [type, setType] = useState<NightwaveChallengeType>('daily')
+  const t = useT()
 
   useEffect(() => {
     init()
@@ -58,7 +61,7 @@ function NightwaveTracker(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </div>
     )
   }
@@ -66,18 +69,18 @@ function NightwaveTracker(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Nightwave
+        {t('sidebar.nav.nightwave')}
       </h1>
 
       <div className="grid grid-cols-2 gap-4">
-        <ResetCountdown label="Kunlik reset" target={dailyTarget} />
-        <ResetCountdown label="Haftalik reset" target={weeklyTarget} />
+        <ResetCountdown label={t('nightwave.dailyReset')} target={dailyTarget} />
+        <ResetCountdown label={t('nightwave.weeklyReset')} target={weeklyTarget} />
       </div>
 
       <form onSubmit={handleAdd} className="flex flex-wrap gap-2">
         <input
           type="text"
-          placeholder="Challenge nomi"
+          placeholder={t('nightwave.challengeTitlePlaceholder')}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="flex-1 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
@@ -87,25 +90,25 @@ function NightwaveTracker(): React.JSX.Element {
           onChange={(e) => setType(e.target.value as NightwaveChallengeType)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-3 py-2 text-sm"
         >
-          <option value="daily">Kunlik</option>
-          <option value="weekly">Haftalik</option>
-          <option value="season">Mavsum</option>
+          <option value="daily">{t('nightwave.type.daily')}</option>
+          <option value="weekly">{t('nightwave.type.weekly')}</option>
+          <option value="season">{t('nightwave.type.season')}</option>
         </select>
         <button
           type="submit"
           className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
-          Qo&apos;shish
+          {t('nightwave.add')}
         </button>
       </form>
 
       {(['daily', 'weekly', 'season'] as const).map((groupType) => (
         <div key={groupType} className="surface-base rounded-lg p-4">
           <h2 className="mb-2 font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
-            {TYPE_LABELS[groupType]}
+            {t(TYPE_LABEL_KEYS[groupType])}
           </h2>
           {grouped[groupType].length === 0 && (
-            <p className="text-sm text-[var(--color-t2)]">Hali challenge qo&apos;shilmagan.</p>
+            <p className="text-sm text-[var(--color-t2)]">{t('nightwave.empty')}</p>
           )}
           <ul className="space-y-1">
             {grouped[groupType].map((challenge) => (

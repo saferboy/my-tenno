@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useAppStore } from '../store/useAppStore'
 import { useRivenStore } from '../store/useRivenStore'
 import { WEAPON_CATEGORIES } from '../constants'
+import { useT } from '../i18n/useT'
 
 // TDD 5.5: Riven'lar foydalanuvchi tomonidan qo'lda kiritiladi (rasmiy API
 // riven roll natijalarini bermaydi); dispozitsiya esa master data'dan
@@ -14,13 +15,17 @@ function RivenTracker(): React.JSX.Element {
   const addRiven = useRivenStore((s) => s.addRiven)
   const updateRiven = useRivenStore((s) => s.updateRiven)
   const removeRiven = useRivenStore((s) => s.removeRiven)
+  const t = useT()
 
   useEffect(() => {
     init()
   }, [init])
 
   const weapons = useMemo(
-    () => items.filter((i) => WEAPON_CATEGORIES.has(i.category)).sort((a, b) => a.name.localeCompare(b.name)),
+    () =>
+      items
+        .filter((i) => WEAPON_CATEGORIES.has(i.category))
+        .sort((a, b) => a.name.localeCompare(b.name)),
     [items]
   )
   const weaponByUniqueName = useMemo(() => new Map(items.map((i) => [i.uniqueName, i])), [items])
@@ -53,7 +58,7 @@ function RivenTracker(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </div>
     )
   }
@@ -61,7 +66,7 @@ function RivenTracker(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Riven Mod Tracker
+        {t('riven.title')}
       </h1>
 
       <form onSubmit={handleAdd} className="surface-base flex flex-col gap-2 rounded-lg p-4">
@@ -71,21 +76,21 @@ function RivenTracker(): React.JSX.Element {
           required
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         >
-          <option value="">Qurolni tanlang...</option>
+          <option value="">{t('riven.selectPlaceholder')}</option>
           {weapons.map((weapon) => (
             <option key={weapon.uniqueName} value={weapon.uniqueName}>
-              {weapon.name} (Disp: {String(weapon.disposition ?? '-')})
+              {weapon.name} ({t('riven.disp')}: {String(weapon.disposition ?? '-')})
             </option>
           ))}
         </select>
         <textarea
-          placeholder="Statlar (har biri yangi qatorda)"
+          placeholder={t('riven.statsPlaceholder')}
           value={statsInput}
           onChange={(e) => setStatsInput(e.target.value)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
         />
         <textarea
-          placeholder="Maqsad (ixtiyoriy)"
+          placeholder={t('riven.targetPlaceholder')}
           value={targetNotes}
           onChange={(e) => setTargetNotes(e.target.value)}
           className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-3 py-2 text-sm"
@@ -94,19 +99,23 @@ function RivenTracker(): React.JSX.Element {
           type="submit"
           className="self-start rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
-          Riven qo&apos;shish
+          {t('riven.add')}
         </button>
       </form>
 
+      {rivens.length === 0 && <p className="text-sm text-[var(--color-t2)]">{t('riven.empty')}</p>}
+
       <div className="grid gap-4 sm:grid-cols-2">
         {rivens.map((riven) => {
-          const weapon = riven.weaponUniqueName ? weaponByUniqueName.get(riven.weaponUniqueName) : undefined
+          const weapon = riven.weaponUniqueName
+            ? weaponByUniqueName.get(riven.weaponUniqueName)
+            : undefined
           return (
             <div key={riven.id} className="surface-base rounded-lg p-4">
               <div className="mb-2 flex items-start justify-between">
                 <h3 className="font-semibold">{riven.weaponName}</h3>
                 <span className="text-xs text-[var(--color-t2)]">
-                  Disp: {weapon ? String(weapon.disposition ?? '-') : '-'}
+                  {t('riven.disp')}: {weapon ? String(weapon.disposition ?? '-') : '-'}
                 </span>
               </div>
 
@@ -119,12 +128,14 @@ function RivenTracker(): React.JSX.Element {
               )}
 
               {riven.targetNotes && (
-                <p className="mb-2 text-xs text-[var(--color-t2)]">Maqsad: {riven.targetNotes}</p>
+                <p className="mb-2 text-xs text-[var(--color-t2)]">
+                  {t('riven.target', { notes: riven.targetNotes })}
+                </p>
               )}
 
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <div className="flex items-center gap-2">
-                  <span>Reroll: {riven.rerollCount}</span>
+                  <span>{t('riven.reroll', { count: riven.rerollCount })}</span>
                   <button
                     type="button"
                     onClick={() => updateRiven(riven.id, { rerollCount: riven.rerollCount + 1 })}
@@ -139,14 +150,14 @@ function RivenTracker(): React.JSX.Element {
                     checked={riven.mastered}
                     onChange={(e) => updateRiven(riven.id, { mastered: e.target.checked })}
                   />
-                  Mastered
+                  {t('riven.mastered')}
                 </label>
                 <button
                   type="button"
                   onClick={() => removeRiven(riven.id)}
                   className="text-[var(--color-t2)] hover:text-[var(--color-danger)]"
                 >
-                  O&apos;chirish
+                  {t('common.delete')}
                 </button>
               </div>
             </div>

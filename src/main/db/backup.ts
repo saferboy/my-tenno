@@ -59,7 +59,7 @@ export function restoreBackup(dbPath: string, fileName: string): void {
   const dir = dirname(dbPath)
   const backupPath = join(dir, fileName)
   if (!existsSync(backupPath)) {
-    throw new Error(`Backup topilmadi: ${fileName}`)
+    throw new Error(`ERR_BACKUP_NOT_FOUND:${fileName}`)
   }
 
   copyDbFile(dbPath)

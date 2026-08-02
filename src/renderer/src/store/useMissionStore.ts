@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { MissionNode } from '../../../main/masterData/nodes'
 import type { MissionStatus } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface MissionState {
   loading: boolean
@@ -28,7 +29,7 @@ export const useMissionStore = create<MissionState>((set) => ({
       set({ nodes, statusByNode, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -37,7 +38,7 @@ export const useMissionStore = create<MissionState>((set) => ({
       const updated = await window.api.updateMissionStatus(nodeUniqueName, completed)
       set((state) => ({ statusByNode: { ...state.statusByNode, [nodeUniqueName]: updated } }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

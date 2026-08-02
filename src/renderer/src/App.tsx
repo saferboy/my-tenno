@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, type Variants } from 'framer-motion'
 import { useAppStore } from './store/useAppStore'
+import { useUserProfileStore } from './store/useUserProfileStore'
+import { useT } from './i18n/useT'
 import Sidebar, { type View } from './components/Sidebar'
 import Dashboard from './views/Dashboard'
 import MyCollection from './views/MyCollection'
@@ -46,15 +48,18 @@ function App(): React.JSX.Element {
   const loading = useAppStore((s) => s.loading)
   const error = useAppStore((s) => s.error)
   const init = useAppStore((s) => s.init)
+  const initProfile = useUserProfileStore((s) => s.init)
+  const t = useT()
 
   useEffect(() => {
     init()
-  }, [init])
+    initProfile()
+  }, [init, initProfile])
 
   if (error) {
     return (
       <main className="flex min-h-screen items-center justify-center p-10">
-        <p className="text-[var(--color-danger)]">Xatolik: {error}</p>
+        <p className="text-[var(--color-danger)]">{t('app.error', { message: error })}</p>
       </main>
     )
   }
@@ -62,7 +67,7 @@ function App(): React.JSX.Element {
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center p-10">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </main>
     )
   }

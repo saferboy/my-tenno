@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { WishlistItem, WishlistItemInput, WishlistItemPatch } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface WishlistState {
   loading: boolean
@@ -21,7 +22,7 @@ export const useWishlistStore = create<WishlistState>((set) => ({
       set({ items, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -30,7 +31,7 @@ export const useWishlistStore = create<WishlistState>((set) => ({
       const item = await window.api.addWishlistItem(input)
       set((state) => ({ items: [item, ...state.items] }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -39,7 +40,7 @@ export const useWishlistStore = create<WishlistState>((set) => ({
       const updated = await window.api.updateWishlistItem(id, patch)
       set((state) => ({ items: state.items.map((i) => (i.id === id ? updated : i)) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -48,7 +49,7 @@ export const useWishlistStore = create<WishlistState>((set) => ({
       await window.api.deleteWishlistItem(id)
       set((state) => ({ items: state.items.filter((i) => i.id !== id) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

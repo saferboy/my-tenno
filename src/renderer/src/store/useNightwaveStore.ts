@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { NightwaveChallenge, NightwaveChallengeInput } from '../../../main/db/types'
 import { useToastStore } from './useToastStore'
+import { describeError } from '../i18n/errorMessage'
 
 interface NightwaveState {
   loading: boolean
@@ -21,7 +22,7 @@ export const useNightwaveStore = create<NightwaveState>((set) => ({
       set({ challenges, loading: false })
     } catch (error) {
       set({ loading: false })
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -30,7 +31,7 @@ export const useNightwaveStore = create<NightwaveState>((set) => ({
       const challenge = await window.api.addNightwaveChallenge(input)
       set((state) => ({ challenges: [...state.challenges, challenge] }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -39,7 +40,7 @@ export const useNightwaveStore = create<NightwaveState>((set) => ({
       const updated = await window.api.setNightwaveChallengeCompleted(id, completed)
       set((state) => ({ challenges: state.challenges.map((c) => (c.id === id ? updated : c)) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   },
 
@@ -48,7 +49,7 @@ export const useNightwaveStore = create<NightwaveState>((set) => ({
       await window.api.deleteNightwaveChallenge(id)
       set((state) => ({ challenges: state.challenges.filter((c) => c.id !== id) }))
     } catch (error) {
-      useToastStore.getState().show(error instanceof Error ? error.message : String(error))
+      useToastStore.getState().show(describeError(error))
     }
   }
 }))

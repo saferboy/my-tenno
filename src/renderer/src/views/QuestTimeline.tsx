@@ -3,6 +3,7 @@ import { useAppStore } from '../store/useAppStore'
 import { useQuestStore } from '../store/useQuestStore'
 import { questOrderIndex } from '../questOrder'
 import ProgressBar from '../components/ProgressBar'
+import { useT } from '../i18n/useT'
 
 // Kvest ro'yxatining o'zi useAppStore.items'dan (category === 'Quests')
 // olinadi. Ba'zi kvestlar nomi bir xil bo'lgan ikkita alohida yozuvga ega
@@ -14,6 +15,7 @@ function QuestTimeline(): React.JSX.Element {
   const statusByQuest = useQuestStore((s) => s.statusByQuest)
   const init = useQuestStore((s) => s.init)
   const toggleCompleted = useQuestStore((s) => s.toggleCompleted)
+  const t = useT()
 
   useEffect(() => {
     init()
@@ -36,7 +38,7 @@ function QuestTimeline(): React.JSX.Element {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-[var(--color-t2)]">Yuklanmoqda...</p>
+        <p className="text-[var(--color-t2)]">{t('app.loading')}</p>
       </div>
     )
   }
@@ -45,7 +47,7 @@ function QuestTimeline(): React.JSX.Element {
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-          Kvestlar
+          {t('sidebar.nav.quests')}
         </h1>
         <span className="font-mono text-xs text-[var(--color-tenno-cyan)]">
           {completedCount}/{quests.length}

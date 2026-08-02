@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { BackupInfo } from '../../../main/db/backup'
+import type { Locale } from '../../../main/db/types'
 import type { SharePayload } from '../../../main/shareCode'
 import { useAppStore } from '../store/useAppStore'
 import { useMissionStore } from '../store/useMissionStore'
 import { useToastStore } from '../store/useToastStore'
+import { useUserProfileStore } from '../store/useUserProfileStore'
+import { useT } from '../i18n/useT'
+import { LOCALES } from '../i18n/translations'
+import { describeError } from '../i18n/errorMessage'
 
 // TDD 7.2: "Export Backup" / "Restore from Backup" - qo'lda backup boshqaruvi.
 function Settings(): React.JSX.Element {
@@ -15,26 +20,29 @@ function Settings(): React.JSX.Element {
   const reloadItems = useAppStore((s) => s.init)
   const reloadMissions = useMissionStore((s) => s.init)
   const showToast = useToastStore((s) => s.show)
+  const locale = useUserProfileStore((s) => s.locale)
+  const setLocale = useUserProfileStore((s) => s.setLocale)
+  const t = useT()
 
   async function handleGenerateShareCode(): Promise<void> {
     try {
       setShareCode(await window.api.generateShareCode())
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
   async function handleCopyShareCode(): Promise<void> {
     if (!shareCode) return
     await navigator.clipboard.writeText(shareCode)
-    showToast('Nusxalandi.')
+    showToast(t('settings.share.copied'))
   }
 
   async function handleImportShareCode(): Promise<void> {
     try {
       setImportedPreview(await window.api.parseShareCode(importCode))
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
@@ -42,7 +50,7 @@ function Settings(): React.JSX.Element {
     try {
       setOverlayOpen(await window.api.toggleOverlay())
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
@@ -50,66 +58,94 @@ function Settings(): React.JSX.Element {
     try {
       setBackups(await window.api.listBackups())
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }, [showToast])
 
   useEffect(() => {
     window.api.listBackups().then(setBackups, (error) => {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     })
   }, [showToast])
 
   async function handleCreateBackup(): Promise<void> {
     try {
       const info = await window.api.createBackup()
-      showToast(info ? `Backup yaratildi: ${info.fileName}` : "Hali baza mavjud emas, backup kerak emas.")
+      showToast(
+        info
+          ? t('settings.backup.created', { fileName: info.fileName })
+          : t('settings.backup.notNeeded')
+      )
       await refreshBackups()
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
   async function handleRestore(fileName: string): Promise<void> {
-    const confirmed = window.confirm(
-      `"${fileName}" fayldan tiklansinmi? Joriy holat avtomatik backup qilinadi, lekin so'nggi o'zgarishlar shu backup bilan almashtiriladi.`
-    )
+    const confirmed = window.confirm(t('settings.backup.restoreConfirm', { fileName }))
     if (!confirmed) return
 
     try {
       await window.api.restoreBackup(fileName)
-      showToast('Baza tiklandi.')
+      showToast(t('settings.backup.restored'))
       await Promise.all([reloadItems(), reloadMissions(), refreshBackups()])
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
   async function handleExportJson(): Promise<void> {
     try {
       const result = await window.api.exportJson()
-      showToast(result.saved ? `Eksport qilindi: ${result.filePath}` : 'Eksport bekor qilindi.')
+      showToast(
+        result.saved
+          ? t('settings.export.done', { filePath: result.filePath ?? '' })
+          : t('settings.export.cancelled')
+      )
     } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error))
+      showToast(describeError(error))
     }
   }
 
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
       <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        Sozlamalar
+        {t('settings.title')}
       </h1>
 
       <div className="surface-base flex flex-wrap items-center gap-3 rounded-lg p-4">
         <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
-          Mini Overlay (bugungi vazifalar, o&apos;yin ustida)
+          {t('settings.language')}
+        </p>
+        <div className="flex gap-1">
+          {LOCALES.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setLocale(option.value as Locale)}
+              className={`rounded-md px-3 py-2 text-sm ${
+                locale === option.value
+                  ? 'bg-[var(--color-tenno-gold)] text-black'
+                  : 'border border-[var(--color-void-border)] text-[var(--color-t2)] hover:text-[var(--color-t1)]'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="surface-base flex flex-wrap items-center gap-3 rounded-lg p-4">
+        <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
+          {t('settings.overlay.label')}
         </p>
         <button
           type="button"
           onClick={handleToggleOverlay}
           className="rounded-md border border-[var(--color-void-border)] px-4 py-2 text-sm text-[var(--color-t2)] hover:text-[var(--color-t1)]"
         >
-          {overlayOpen ? "O'chirish" : "Yoqish"}
+          {overlayOpen ? t('settings.overlay.on') : t('settings.overlay.off')}
         </button>
       </div>
 
@@ -119,22 +155,24 @@ function Settings(): React.JSX.Element {
           onClick={handleCreateBackup}
           className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
         >
-          Backup yaratish
+          {t('settings.backup.create')}
         </button>
         <button
           type="button"
           onClick={handleExportJson}
           className="rounded-md border border-[var(--color-void-border)] px-4 py-2 text-sm text-[var(--color-t2)] hover:text-[var(--color-t1)]"
         >
-          JSON eksport qilish
+          {t('settings.backup.exportJson')}
         </button>
       </div>
 
       <div className="surface-base rounded-lg p-4">
         <p className="mb-2 font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
-          Backup&apos;lar (oxirgi 5 tasi saqlanadi)
+          {t('settings.backup.listTitle')}
         </p>
-        {backups.length === 0 && <p className="text-sm text-[var(--color-t2)]">Hali backup yo&apos;q.</p>}
+        {backups.length === 0 && (
+          <p className="text-sm text-[var(--color-t2)]">{t('settings.backup.empty')}</p>
+        )}
         <ul className="space-y-1">
           {backups.map((backup) => (
             <li
@@ -152,7 +190,7 @@ function Settings(): React.JSX.Element {
                 onClick={() => handleRestore(backup.fileName)}
                 className="rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
               >
-                Restore
+                {t('settings.backup.restore')}
               </button>
             </li>
           ))}
@@ -161,7 +199,7 @@ function Settings(): React.JSX.Element {
 
       <div className="surface-base rounded-lg p-4">
         <p className="mb-2 font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
-          Share Code (Profile Export/Import)
+          {t('settings.share.title')}
         </p>
 
         <div className="mb-4 flex flex-col gap-2">
@@ -170,7 +208,7 @@ function Settings(): React.JSX.Element {
             onClick={handleGenerateShareCode}
             className="self-start rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
           >
-            Share Code yaratish
+            {t('settings.share.generate')}
           </button>
           {shareCode && (
             <div className="flex flex-col gap-2">
@@ -184,7 +222,7 @@ function Settings(): React.JSX.Element {
                 onClick={handleCopyShareCode}
                 className="self-start rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
               >
-                Nusxalash
+                {t('settings.share.copy')}
               </button>
             </div>
           )}
@@ -192,7 +230,7 @@ function Settings(): React.JSX.Element {
 
         <div className="flex flex-col gap-2">
           <textarea
-            placeholder="Boshqa foydalanuvchining Share Code'ini shu yerga joylashtiring"
+            placeholder={t('settings.share.importPlaceholder')}
             value={importCode}
             onChange={(e) => setImportCode(e.target.value)}
             className="h-24 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1 text-xs"
@@ -202,16 +240,24 @@ function Settings(): React.JSX.Element {
             onClick={handleImportShareCode}
             className="self-start rounded border border-[var(--color-void-border)] px-3 py-1 text-xs uppercase text-[var(--color-tenno-cyan)] hover:bg-[var(--color-void-border)]"
           >
-            Import qilish (faqat ko&apos;rish)
+            {t('settings.share.import')}
           </button>
           {importedPreview && (
             <div className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] p-3 text-xs">
-              <p>Eksport sanasi: {new Date(importedPreview.exportedAt).toLocaleString()}</p>
-              <p>Qurol/frame yozuvlari: {importedPreview.itemStatuses.length}</p>
-              <p>Missiya yozuvlari: {importedPreview.missionStatuses.length}</p>
-              <p className="mt-1 text-[var(--color-t2)]">
-                Bu faqat ko&apos;rish uchun - sizning bazangizga qo&apos;shilmaydi.
+              <p>
+                {t('settings.share.exportedAt', {
+                  date: new Date(importedPreview.exportedAt).toLocaleString()
+                })}
               </p>
+              <p>
+                {t('settings.share.itemRecords', { count: importedPreview.itemStatuses.length })}
+              </p>
+              <p>
+                {t('settings.share.missionRecords', {
+                  count: importedPreview.missionStatuses.length
+                })}
+              </p>
+              <p className="mt-1 text-[var(--color-t2)]">{t('settings.share.previewOnly')}</p>
             </div>
           )}
         </div>

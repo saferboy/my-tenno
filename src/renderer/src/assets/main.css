@@ -53,6 +53,15 @@ body {
   color: var(--color-t1);
   font-family: var(--font-sans);
   user-select: none;
+  /* Native form elementlari (checkbox, radio, number spinner) qorong'i
+     uslubda chizilishi uchun - aks holda OS'ning yorug' standart ko'rinishi
+     void/tenno dizayn tizimiga zid chiqadi. */
+  color-scheme: dark;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--color-tenno-cyan);
 }
 
 /* TDD 5.7: Mini Overlay - shaffof, frameless oyna uchun fon butunlay yo'q

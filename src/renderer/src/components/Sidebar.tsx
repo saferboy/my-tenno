@@ -13,6 +13,8 @@ import {
   Settings as SettingsIcon
 } from 'lucide-react'
 import { useUserProfileStore } from '../store/useUserProfileStore'
+import { useT } from '../i18n/useT'
+import type { TranslationKey } from '../i18n/translations'
 
 export type View =
   | 'dashboard'
@@ -34,37 +36,37 @@ interface SidebarProps {
 
 interface NavItem {
   view: View
-  label: string
+  labelKey: TranslationKey
   icon: React.ElementType
 }
 
 interface NavGroup {
-  label: string
+  labelKey: TranslationKey
   items: NavItem[]
 }
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: 'OVERVIEW',
-    items: [{ view: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }]
+    labelKey: 'sidebar.group.overview',
+    items: [{ view: 'dashboard', labelKey: 'sidebar.nav.dashboard', icon: LayoutDashboard }]
   },
   {
-    label: 'ARSENAL',
+    labelKey: 'sidebar.group.arsenal',
     items: [
-      { view: 'myCollection', label: 'Mening qurollarim', icon: Package },
-      { view: 'weapons', label: 'Weapons', icon: Crosshair },
-      { view: 'warframes', label: 'Warframes', icon: Shield },
-      { view: 'companion', label: 'Companion', icon: Bot },
-      { view: 'wishlist', label: 'Wishlist', icon: Heart }
+      { view: 'myCollection', labelKey: 'sidebar.nav.myCollection', icon: Package },
+      { view: 'weapons', labelKey: 'sidebar.nav.weapons', icon: Crosshair },
+      { view: 'warframes', labelKey: 'sidebar.nav.warframes', icon: Shield },
+      { view: 'companion', labelKey: 'sidebar.nav.companion', icon: Bot },
+      { view: 'wishlist', labelKey: 'sidebar.nav.wishlist', icon: Heart }
     ]
   },
   {
-    label: 'JOURNEY',
+    labelKey: 'sidebar.group.journey',
     items: [
-      { view: 'missions', label: 'Missiyalar', icon: Globe },
-      { view: 'quests', label: 'Kvestlar', icon: Milestone },
-      { view: 'nightwave', label: 'Nightwave', icon: Scroll },
-      { view: 'riven', label: 'Rivenlar', icon: Zap }
+      { view: 'missions', labelKey: 'sidebar.nav.missions', icon: Globe },
+      { view: 'quests', labelKey: 'sidebar.nav.quests', icon: Milestone },
+      { view: 'nightwave', labelKey: 'sidebar.nav.nightwave', icon: Scroll },
+      { view: 'riven', labelKey: 'sidebar.nav.riven', icon: Zap }
     ]
   }
 ]
@@ -73,6 +75,7 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
   const masteryRank = useUserProfileStore((s) => s.masteryRank)
   const initProfile = useUserProfileStore((s) => s.init)
   const setMasteryRank = useUserProfileStore((s) => s.setMasteryRank)
+  const t = useT()
 
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
@@ -113,18 +116,20 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
           <div className="font-display text-sm leading-tight font-bold tracking-wide text-[var(--color-t1)]">
             MY TENNO
           </div>
-          <div className="font-mono text-[9px] tracking-widest text-[var(--color-tenno-cyan)]">TENNO LOG</div>
+          <div className="font-mono text-[9px] tracking-widest text-[var(--color-tenno-cyan)]">
+            TENNO LOG
+          </div>
         </div>
       </div>
 
       {/* Nav */}
       <div className="flex-1 overflow-y-auto py-2">
         {NAV_GROUPS.map((group) => (
-          <div key={group.label} className="mb-1">
+          <div key={group.labelKey} className="mb-1">
             <div className="px-3 pt-3 pb-1 font-mono text-[9.5px] font-semibold tracking-widest text-[var(--color-t3)]">
-              {group.label}
+              {t(group.labelKey)}
             </div>
-            {group.items.map(({ view, label, icon: Icon }) => {
+            {group.items.map(({ view, labelKey, icon: Icon }) => {
               const isActive = active === view
               return (
                 <button
@@ -137,8 +142,12 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
                       : 'border-l-transparent text-[var(--color-t2)] hover:bg-white/3 hover:text-[var(--color-t1)]'
                   }`}
                 >
-                  <Icon size={14} strokeWidth={isActive ? 1.8 : 1.6} className={isActive ? 'text-[var(--color-tenno-cyan)]' : ''} />
-                  <span className="flex-1">{label}</span>
+                  <Icon
+                    size={14}
+                    strokeWidth={isActive ? 1.8 : 1.6}
+                    className={isActive ? 'text-[var(--color-tenno-cyan)]' : ''}
+                  />
+                  <span className="flex-1">{t(labelKey)}</span>
                 </button>
               )
             })}
@@ -157,8 +166,12 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
               : 'border-l-transparent text-[var(--color-t2)] hover:bg-white/3 hover:text-[var(--color-t1)]'
           }`}
         >
-          <SettingsIcon size={14} strokeWidth={1.6} className={active === 'settings' ? 'text-[var(--color-tenno-cyan)]' : ''} />
-          <span className="flex-1">Sozlamalar</span>
+          <SettingsIcon
+            size={14}
+            strokeWidth={1.6}
+            className={active === 'settings' ? 'text-[var(--color-tenno-cyan)]' : ''}
+          />
+          <span className="flex-1">{t('sidebar.nav.settings')}</span>
         </button>
       </div>
 
@@ -173,7 +186,9 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
           {masteryRank}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-xs font-semibold text-[var(--color-t1)]">Tenno</div>
+          <div className="text-xs font-semibold text-[var(--color-t1)]">
+            {t('sidebar.profile.name')}
+          </div>
           {editing ? (
             <input
               type="number"
@@ -190,7 +205,9 @@ function Sidebar({ active, onNavigate }: SidebarProps): React.JSX.Element {
               className="mt-0.5 w-16 rounded border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-1 py-0.5 font-mono text-[10px] text-[var(--color-t1)]"
             />
           ) : (
-            <div className="font-mono text-[10px] text-[var(--color-t2)]">Mastery Rank {masteryRank}</div>
+            <div className="font-mono text-[10px] text-[var(--color-t2)]">
+              {t('sidebar.profile.masteryRank', { rank: masteryRank })}
+            </div>
           )}
         </div>
       </button>

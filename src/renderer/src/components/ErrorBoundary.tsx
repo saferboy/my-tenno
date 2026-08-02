@@ -1,4 +1,6 @@
 import { Component, type ReactNode } from 'react'
+import { useUserProfileStore } from '../store/useUserProfileStore'
+import { translations } from '../i18n/translations'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -19,16 +21,19 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render(): ReactNode {
     if (this.state.error) {
+      const t = translations[useUserProfileStore.getState().locale]
       return (
         <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-10">
-          <h1 className="font-display text-lg font-bold text-[var(--color-danger)]">Kutilmagan xatolik yuz berdi</h1>
+          <h1 className="font-display text-lg font-bold text-[var(--color-danger)]">
+            {t['errorBoundary.title']}
+          </h1>
           <p className="max-w-md text-center text-sm text-[var(--color-t2)]">{this.state.error.message}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}
             className="rounded-md bg-[var(--color-tenno-gold)] px-4 py-2 text-sm font-semibold text-black"
           >
-            Qayta yuklash
+            {t['errorBoundary.reload']}
           </button>
         </main>
       )
