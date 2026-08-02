@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { useAppStore } from '../store/useAppStore'
 import { useCompanionStore } from '../store/useCompanionStore'
 import Pagination from '../components/Pagination'
@@ -109,32 +110,34 @@ function CompanionFocus(): React.JSX.Element {
         </ul>
       </div>
 
-      {selected && (
-        <ItemDrawer
-          item={selected}
-          status={selectedItemStatus}
-          onChange={(patch) => updateItemStatus(selected.uniqueName, patch)}
-          onClose={() => setSelected(null)}
-          extra={
-            <label className="flex flex-col gap-1 text-sm">
-              {t('companion.dnaStability')}
-              <input
-                type="number"
-                min={0}
-                max={100}
-                value={selectedDnaStability ?? ''}
-                onChange={(e) =>
-                  setDnaStability(
-                    selected.uniqueName,
-                    e.target.value === '' ? null : Number(e.target.value)
-                  )
-                }
-                className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
-              />
-            </label>
-          }
-        />
-      )}
+      <AnimatePresence>
+        {selected && (
+          <ItemDrawer
+            item={selected}
+            status={selectedItemStatus}
+            onChange={(patch) => updateItemStatus(selected.uniqueName, patch)}
+            onClose={() => setSelected(null)}
+            extra={
+              <label className="flex flex-col gap-1 text-sm">
+                {t('companion.dnaStability')}
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={selectedDnaStability ?? ''}
+                  onChange={(e) =>
+                    setDnaStability(
+                      selected.uniqueName,
+                      e.target.value === '' ? null : Number(e.target.value)
+                    )
+                  }
+                  className="rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-black)] px-2 py-1"
+                />
+              </label>
+            }
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

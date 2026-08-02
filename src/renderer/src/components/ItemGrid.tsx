@@ -1,4 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import Fuse from 'fuse.js'
 import { useAppStore, type StatusFilter } from '../store/useAppStore'
 import { filterItems } from '../store/selectors'
@@ -128,6 +129,15 @@ function ItemGrid({
   }, [scopedItems, fuse, searchQuery, categoryFilter, typeFilter, statusFilter, statusByItem])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+
+  // Filtr mezonlari o'zgarmasa ham, ro'yxat qisqarishi mumkin (masalan
+  // "Egalik qilinmagan" filtri faol bo'lsa-yu, Drawer orqali oxirgi
+  // sahifadagi biror itemni "Owned" deb belgilasangiz) - shunda joriy
+  // sahifa mavjud bo'lmagan sahifaga aylanib, bo'sh grid ko'rsatardi.
+  if (page > pageCount - 1) {
+    setPage(pageCount - 1)
+  }
+
   const pageItems = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
 
   const owned = useMemo(
@@ -250,14 +260,16 @@ function ItemGrid({
 
       <Pagination page={page} pageCount={pageCount} onChange={setPage} />
 
-      {selected && (
-        <ItemDrawer
-          item={selected}
-          status={selectedStatus}
-          onChange={(patch) => updateStatus(selected.uniqueName, patch)}
-          onClose={() => setSelected(null)}
-        />
-      )}
+      <AnimatePresence>
+        {selected && (
+          <ItemDrawer
+            item={selected}
+            status={selectedStatus}
+            onChange={(patch) => updateStatus(selected.uniqueName, patch)}
+            onClose={() => setSelected(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
