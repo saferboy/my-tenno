@@ -247,7 +247,7 @@ function OrbitalMap({ planet, nodes, statusByNode, selectedNode, onSelectNode }:
 
         {/* center title */}
         <div
-          className="pointer-events-none absolute left-1/2 z-[4] -translate-x-1/2 text-center"
+          className="pointer-events-none absolute left-1/2 z-[6] -translate-x-1/2 text-center"
           style={{ top: `calc(50% - ${outerRadius + 140}px)` }}
         >
           <div
