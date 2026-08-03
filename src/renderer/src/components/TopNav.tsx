@@ -119,7 +119,10 @@ function TopNav({ active, onNavigate }: TopNavProps): React.JSX.Element {
   }
 
   return (
-    <header className="flex shrink-0 flex-col border-b border-[var(--color-void-border)] bg-[var(--color-void-dark)]">
+    <header
+      className="relative z-10 flex shrink-0 flex-col"
+      style={{ background: 'rgba(3,9,20,.9)', borderBottom: '1px solid rgba(0,210,255,.18)' }}
+    >
       <div className="flex h-14 shrink-0 items-center gap-6 px-4">
         <div className="flex shrink-0 items-center gap-2.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[var(--color-tenno-cyan)] to-[var(--color-tenno-blue)]">
@@ -151,7 +154,7 @@ function TopNav({ active, onNavigate }: TopNavProps): React.JSX.Element {
                 type="button"
                 onClick={() => handleTabClick(group)}
                 className={`t hover-glow flex h-full items-center gap-2 border-b-2 border-transparent px-3 font-mono text-[11px] font-semibold tracking-widest uppercase ${
-                  isActive ? 'nav-tab-active' : 'text-[var(--color-t2)] hover:text-[var(--color-t1)]'
+                  isActive ? 'nav-tab-active' : 'text-[var(--color-t3)] hover:text-[#aee9ff]'
                 }`}
               >
                 <Icon size={14} strokeWidth={isActive ? 1.8 : 1.6} className={isActive ? 'icon-glow-cyan text-[var(--color-tenno-cyan)]' : ''} />
@@ -161,23 +164,29 @@ function TopNav({ active, onNavigate }: TopNavProps): React.JSX.Element {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-2 py-1">
-            <Coins size={13} className="icon-glow-gold shrink-0 text-[var(--color-tenno-gold)]" />
+        <div className="flex shrink-0 items-center gap-2 font-mono text-xs">
+          <div
+            className="flex items-center gap-2 px-3.5 py-1.5"
+            style={{ border: '1px solid rgba(0,210,255,.25)', background: 'rgba(0,210,255,.06)' }}
+          >
+            <Coins size={13} className="icon-glow-cyan shrink-0 text-[var(--color-tenno-cyan)]" />
             <EditableNumber
               value={credits}
               onCommit={setCredits}
               format={(v) => v.toLocaleString()}
-              className="font-mono text-xs text-[var(--color-t1)] hover:text-[var(--color-tenno-gold)]"
+              className="font-mono text-xs text-[#9fdcff] hover:text-[var(--color-tenno-cyan)]"
             />
           </div>
-          <div className="flex items-center gap-1.5 rounded-md border border-[var(--color-void-border)] bg-[var(--color-void-base)] px-2 py-1">
-            <Gem size={13} className="icon-glow-cyan shrink-0 text-[var(--color-tenno-violet)]" />
+          <div
+            className="flex items-center gap-2 px-3.5 py-1.5"
+            style={{ border: '1px solid rgba(255,224,102,.3)', background: 'rgba(255,224,102,.06)' }}
+          >
+            <Gem size={13} className="icon-glow-gold shrink-0 text-[var(--color-tenno-gold)]" />
             <EditableNumber
               value={platinum}
               onCommit={setPlatinum}
               format={(v) => v.toLocaleString()}
-              className="font-mono text-xs text-[var(--color-t1)] hover:text-[var(--color-tenno-violet)]"
+              className="font-mono text-xs text-[var(--color-tenno-gold)] hover:text-[var(--color-tenno-gold)]"
             />
           </div>
         </div>

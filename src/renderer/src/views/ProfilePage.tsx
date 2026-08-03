@@ -50,15 +50,15 @@ function ProfilePage(): React.JSX.Element {
             value={credits}
             onCommit={setCredits}
             format={(v) => v.toLocaleString()}
-            className="font-display text-2xl font-extrabold text-[var(--color-t1)] hover:text-[var(--color-tenno-gold)]"
+            className="font-display text-2xl font-extrabold text-[var(--color-t1)] hover:text-[var(--color-tenno-cyan)]"
           />
         </Panel>
-        <Panel title={t('profile.platinum')} icon={Gem}>
+        <Panel title={t('profile.platinum')} icon={Gem} tone="gold">
           <EditableNumber
             value={platinum}
             onCommit={setPlatinum}
             format={(v) => v.toLocaleString()}
-            className="font-display text-2xl font-extrabold text-[var(--color-t1)] hover:text-[var(--color-tenno-violet)]"
+            className="font-display text-2xl font-extrabold text-[var(--color-t1)] hover:text-[var(--color-tenno-gold)]"
           />
         </Panel>
       </div>

@@ -11,6 +11,8 @@ export interface MissionNode {
   masteryReq?: number
   minEnemyLevel?: number
   maxEnemyLevel?: number
+  type?: string
+  faction?: string
 }
 
 // TDD 5.3: Mission Tracker uchun star chart node'lari - Arsenal'ning
@@ -21,6 +23,11 @@ export interface MissionNode {
 // keshlanadi (24 soat), internet yo'q bo'lsa bundle qilingan paketga
 // zaxira sifatida qaytiladi.
 const RAW_URL = 'https://raw.githubusercontent.com/WFCD/warframe-items/master/data/json/Node.json'
+// Node.json'da missiya turi/faksiya faqat raqamli kod (nodeType) sifatida bor,
+// ishonchli oshkor jadval topilmadi. warframe-worldstate-parser'ning
+// solNodes.json'i xuddi shu uniqueName bo'yicha kalitlangan va bu maydonlarni
+// allaqachon o'qiladigan matn ko'rinishida beradi (masalan "Spy"/"Grineer").
+const SOL_NODES_URL = 'https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/solNodes.json'
 const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000
 
 interface CacheFile {
@@ -98,26 +105,45 @@ interface RawNode {
   maxEnemyLevel?: number
 }
 
-function toNode(raw: RawNode): MissionNode {
+interface SolNodeInfo {
+  type?: string
+  enemy?: string
+}
+
+function toNode(raw: RawNode, solInfo?: SolNodeInfo): MissionNode {
   return {
     uniqueName: raw.uniqueName,
     name: raw.name,
     systemName: raw.systemName,
     masteryReq: raw.masteryReq,
     minEnemyLevel: raw.minEnemyLevel,
-    maxEnemyLevel: raw.maxEnemyLevel
+    maxEnemyLevel: raw.maxEnemyLevel,
+    type: solInfo?.type,
+    faction: solInfo?.enemy
   }
 }
 
 function loadFromBundledPackage(): MissionNode[] {
   const options = { category: ['Node'] } as ConstructorParameters<typeof Items>[0]
   const instance = new Items(options) as unknown as RawNode[]
-  return instance.map(toNode)
+  // Offline zaxira - solNodes.json tarmoqdan kelmagani uchun type/faction bo'sh qoladi.
+  return instance.map((raw) => toNode(raw))
+}
+
+async function fetchSolNodeInfo(): Promise<Record<string, SolNodeInfo>> {
+  try {
+    return (await fetchJson(SOL_NODES_URL)) as Record<string, SolNodeInfo>
+  } catch {
+    return {}
+  }
 }
 
 async function fetchAndCache(): Promise<void> {
-  const raw = (await fetchJson(RAW_URL)) as RawNode[]
-  const nodes = raw.map(toNode)
+  const [raw, solNodes] = await Promise.all([
+    fetchJson(RAW_URL) as Promise<RawNode[]>,
+    fetchSolNodeInfo()
+  ])
+  const nodes = raw.map((r) => toNode(r, solNodes[r.uniqueName]))
   cachedNodes = nodes
   writeFileSync(getCacheFilePath(), JSON.stringify({ fetchedAt: Date.now(), nodes }))
 }

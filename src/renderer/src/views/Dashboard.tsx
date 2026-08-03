@@ -95,7 +95,7 @@ function Dashboard(): React.JSX.Element {
         <StatTile
           label={t('dashboard.stat.weaponMaxed')}
           value={`${stats.weaponMaxed}/${stats.weaponTotal}`}
-          accentColor="#c9a84c"
+          accentColor="#ffe066"
         />
         <StatTile
           label={t('dashboard.stat.frameOwned')}
@@ -110,7 +110,7 @@ function Dashboard(): React.JSX.Element {
         <StatTile
           label={t('dashboard.stat.overallPct')}
           value={`${Math.round(stats.overallPct * 100)}%`}
-          accentColor="#4ecdc4"
+          accentColor="#00d2ff"
         />
       </div>
 

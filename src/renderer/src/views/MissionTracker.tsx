@@ -85,20 +85,15 @@ function MissionTracker(): React.JSX.Element {
         onSelect={handleSelectPlanet}
       />
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-8">
-        <h1 className="mb-6 font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-          {t('sidebar.nav.missions')}
-        </h1>
-        {currentGroup && (
-          <OrbitalMap
-            planet={currentGroup.planet}
-            nodes={currentGroup.nodes}
-            statusByNode={statusByNode}
-            selectedNode={selectedNode}
-            onSelectNode={setSelectedNode}
-          />
-        )}
-      </div>
+      {currentGroup && (
+        <OrbitalMap
+          planet={currentGroup.planet}
+          nodes={currentGroup.nodes}
+          statusByNode={statusByNode}
+          selectedNode={selectedNode}
+          onSelectNode={setSelectedNode}
+        />
+      )}
 
       <MissionInfoPanel
         node={currentNode}

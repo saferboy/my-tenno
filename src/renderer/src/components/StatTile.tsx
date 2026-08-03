@@ -10,7 +10,7 @@ interface StatTileProps {
 
 // Dashboard va boshqa sahifalardagi statistika kartalari uchun umumiy
 // komponent - hover holatida accentColor bilan chegara yorqinlashadi.
-function StatTile({ label, value, sub, accentColor = '#4ecdc4', icon: Icon }: StatTileProps): React.JSX.Element {
+function StatTile({ label, value, sub, accentColor = '#00d2ff', icon: Icon }: StatTileProps): React.JSX.Element {
   const [hovered, setHovered] = useState(false)
 
   return (

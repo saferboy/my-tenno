@@ -2,49 +2,46 @@
 
 /* Offline-safe shriftlar - Google Fonts CDN o'rniga mahalliy (npm) paketlar,
    loyihaning offline-first tamoyiliga mos (tenno.md). */
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/manrope/400.css';
-@import '@fontsource/manrope/700.css';
-@import '@fontsource/manrope/800.css';
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/500.css';
-@import '@fontsource/jetbrains-mono/600.css';
+@import '@fontsource/rajdhani/500.css';
+@import '@fontsource/rajdhani/600.css';
+@import '@fontsource/rajdhani/700.css';
+@import '@fontsource/share-tech-mono/400.css';
 
-/* "Void/Tenno" dizayn tizimi - Figma Make maketidan qabul qilingan. */
+/* "Sci-Fi HUD" dizayn tizimi - design handoff maketidan (neon cyan + Orokin
+   gold) qabul qilingan, o'zgaruvchi nomlari eskisidan saqlanib qoldi. */
 @theme {
-  --color-void-black: #0b0c10;
-  --color-void-dark: #111318;
-  --color-void-base: #181a20;
-  --color-void-surface: #20242c;
-  --color-void-border: #2b313b;
-  --color-void-line: #353d4a;
-  --color-void-subtle: #40495a;
+  --color-void-black: #000000;
+  --color-void-dark: #020509;
+  --color-void-base: #06101e;
+  --color-void-surface: #0a1626;
+  --color-void-border: #16283a;
+  --color-void-line: #1c3348;
+  --color-void-subtle: #24425c;
+  --color-void-glass: rgba(6, 16, 30, 0.55);
 
-  --color-tenno-cyan: #4ecdc4;
-  --color-tenno-cyan-dim: #1e5e5b;
-  --color-tenno-cyan-faint: #0b2b29;
-  --color-tenno-blue: #3a86ff;
-  --color-tenno-blue-dim: #1a3f7a;
-  --color-tenno-gold: #c9a84c;
-  --color-tenno-gold-dim: #6b5020;
-  --color-tenno-gold-faint: #2a1e08;
+  --color-tenno-cyan: #00d2ff;
+  --color-tenno-cyan-dim: #0a5570;
+  --color-tenno-cyan-faint: #04212c;
+  --color-tenno-blue: #005f80;
+  --color-tenno-blue-dim: #033145;
+  --color-tenno-gold: #ffe066;
+  --color-tenno-gold-dim: #7a6420;
+  --color-tenno-gold-faint: #2e2608;
   --color-tenno-violet: #7b61ff;
   --color-tenno-violet-dim: #3d2f80;
 
-  --color-t1: #e8eaf0;
-  --color-t2: #8b919e;
-  --color-t3: #4a515e;
-  --color-t4: #2a2f38;
+  --color-t1: #eaf6ff;
+  --color-t2: #9fdcff;
+  --color-t3: #5c7185;
+  --color-t4: #3d576f;
 
   --color-ok: #4caf79;
   --color-warn: #f0a030;
   --color-danger: #e05050;
 
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Manrope', 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Rajdhani', system-ui, sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
 }
 
 body {
@@ -55,7 +52,7 @@ body {
   user-select: none;
   /* Native form elementlari (checkbox, radio, number spinner) qorong'i
      uslubda chizilishi uchun - aks holda OS'ning yorug' standart ko'rinishi
-     void/tenno dizayn tizimiga zid chiqadi. */
+     dizayn tizimiga zid chiqadi. */
   color-scheme: dark;
 }
 
@@ -86,7 +83,7 @@ body.overlay-mode {
 }
 
 ::selection {
-  background: rgba(78, 205, 196, 0.2);
+  background: rgba(0, 210, 255, 0.2);
   color: var(--color-tenno-cyan);
 }
 
@@ -94,13 +91,13 @@ body.overlay-mode {
   0%,
   100% {
     box-shadow:
-      0 0 8px rgba(78, 205, 196, 0.2),
-      0 0 20px rgba(78, 205, 196, 0.06);
+      0 0 8px rgba(0, 210, 255, 0.2),
+      0 0 20px rgba(0, 210, 255, 0.06);
   }
   50% {
     box-shadow:
-      0 0 16px rgba(78, 205, 196, 0.35),
-      0 0 40px rgba(78, 205, 196, 0.12);
+      0 0 16px rgba(0, 210, 255, 0.35),
+      0 0 40px rgba(0, 210, 255, 0.12);
   }
 }
 @keyframes slide-in-up {
@@ -131,6 +128,64 @@ body.overlay-mode {
     background-position: 200% 0;
   }
 }
+@keyframes corePulse {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 0 18px rgba(0, 210, 255, 0.85)) drop-shadow(0 0 55px rgba(0, 210, 255, 0.45));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 30px rgba(0, 210, 255, 1)) drop-shadow(0 0 90px rgba(0, 210, 255, 0.7));
+  }
+}
+@keyframes nodeDrift {
+  0% {
+    transform: translate(-50%, -50%) translateY(-4px);
+  }
+  100% {
+    transform: translate(-50%, -50%) translateY(4px);
+  }
+}
+@keyframes ringSpin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+@keyframes ringSpinRev {
+  from {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+@keyframes scanMove {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 8px;
+  }
+}
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes hexBreath {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.45));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 13px rgba(0, 210, 255, 0.9)) drop-shadow(0 0 26px rgba(0, 210, 255, 0.35));
+  }
+}
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
@@ -152,87 +207,132 @@ body.overlay-mode {
   border: 1px solid var(--color-void-border);
 }
 
+/* Shisha-panel effekti - Star Chart o'ng panellari va sidebar uchun. */
+.glass-panel {
+  background: var(--color-void-glass);
+  backdrop-filter: blur(20px);
+}
+.clip-corner {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.clip-corner-sm {
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+.scanlines {
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 4px);
+  animation: scanMove 1.2s linear infinite;
+  mix-blend-mode: multiply;
+}
+
 .glow-cyan {
   box-shadow:
-    0 0 12px rgba(78, 205, 196, 0.2),
-    0 0 30px rgba(78, 205, 196, 0.07);
+    0 0 12px rgba(0, 210, 255, 0.2),
+    0 0 30px rgba(0, 210, 255, 0.07);
 }
 .glow-gold {
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.2);
+  box-shadow: 0 0 12px rgba(255, 224, 102, 0.2);
 }
 .border-glow {
-  border: 1px solid rgba(78, 205, 196, 0.25);
-  box-shadow: inset 0 0 16px rgba(78, 205, 196, 0.03);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  box-shadow: inset 0 0 16px rgba(0, 210, 255, 0.03);
 }
 
 .progress-bar {
-  background: linear-gradient(90deg, #4ecdc4, #3a86ff 60%, #4ecdc4);
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-  box-shadow: 0 0 8px rgba(78, 205, 196, 0.35);
+  background: linear-gradient(90deg, #00d2ff, #ffe066);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.5);
 }
 
-/* Sidebar faol nav elementi. */
+/* TopNav faol tab. */
 .nav-active {
-  background: rgba(78, 205, 196, 0.08);
+  background: rgba(0, 210, 255, 0.08);
   border-left: 2px solid var(--color-tenno-cyan);
-  box-shadow: inset 0 0 20px rgba(78, 205, 196, 0.03);
+  box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.03);
 }
 
 /* Mastery Rank belgisi. */
 .rank-badge {
-  background: linear-gradient(135deg, #c9a84c, #8a6020);
-  box-shadow: 0 0 8px rgba(201, 168, 76, 0.3);
+  background: linear-gradient(135deg, #ffe066, #7a6420);
+  box-shadow: 0 0 8px rgba(255, 224, 102, 0.3);
 }
 
 .t {
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* TopNav faol tab - Sidebar'ning chap-border .nav-active'iga o'xshash,
-   lekin gorizontal panel uchun pastki-border/underline shaklida. */
+/* TopNav faol tab - pastki-border/underline shaklida glow bilan. */
 .nav-tab-active {
   color: var(--color-t1);
   border-bottom-color: var(--color-tenno-cyan);
-  box-shadow: inset 0 -14px 18px -14px rgba(78, 205, 196, 0.18);
+  box-shadow: inset 0 -14px 18px -14px rgba(0, 210, 255, 0.18);
+  text-shadow: 0 0 12px rgba(0, 210, 255, 0.8);
 }
 
-/* Umumiy interaktiv hover-glow - tugma/icon fon+soya kuchayishi,
-   "o'yin UI" hissi uchun butun ilovada qayta ishlatiladi. */
+/* Umumiy interaktiv hover-glow - tugma/icon fon+soya kuchayishi. */
 .hover-glow:hover {
-  background: rgba(78, 205, 196, 0.06);
-  box-shadow: inset 0 0 16px rgba(78, 205, 196, 0.05);
+  background: rgba(0, 210, 255, 0.06);
+  box-shadow: inset 0 0 16px rgba(0, 210, 255, 0.05);
 }
 .icon-glow-cyan {
-  filter: drop-shadow(0 0 3px rgba(78, 205, 196, 0.5));
+  filter: drop-shadow(0 0 3px rgba(0, 210, 255, 0.5));
 }
 .icon-glow-gold {
-  filter: drop-shadow(0 0 3px rgba(201, 168, 76, 0.5));
+  filter: drop-shadow(0 0 3px rgba(255, 224, 102, 0.5));
 }
 
-/* Star Chart orbital xarita - hexagon missiya tugunlari.
-   clip-path butun box'ni (border/bg bilan) kesadi, lekin box-shadow'ga
-   ta'sir qilmaydi - shu sabab glow uchun filter:drop-shadow ishlatiladi. */
-.hex-node {
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+/* Star Chart orbital xarita - ikki qatlamli hexagon missiya tugunlari
+   (tashqi = rim rangi, ichki = qorong'i gradient to'ldirish), design
+   handoff maketidagi texnikaga mos. clip-path butun box'ni kesadi, lekin
+   box-shadow'ga ta'sir qilmaydi - shu sabab glow uchun filter:drop-shadow
+   ishlatiladi. */
+.hex-wrap {
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+  cursor: pointer;
 }
-.hex-node--available {
-  background: var(--color-void-surface);
-  border: 2px solid var(--color-void-subtle);
+.hex-wrap:hover {
+  transform: scale(1.1);
+  filter:
+    drop-shadow(0 0 15px #ffffff) drop-shadow(0 0 8px rgba(255, 224, 102, 0.9))
+    drop-shadow(0 0 34px rgba(0, 210, 255, 0.8));
 }
-.hex-node--available:hover {
-  border-color: var(--color-tenno-cyan);
-  filter: drop-shadow(0 0 8px rgba(78, 205, 196, 0.5));
+.hex-outer {
+  width: 54px;
+  height: 60px;
+  position: relative;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
-.hex-node--complete {
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.28), rgba(201, 168, 76, 0.08));
-  border: 2px solid var(--color-tenno-gold);
-  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.4));
+.hex-outer--available {
+  background: var(--color-tenno-cyan);
 }
-.hex-node--complete:hover {
-  filter: drop-shadow(0 0 12px rgba(201, 168, 76, 0.65));
+.hex-outer--complete {
+  background: var(--color-tenno-gold);
 }
-.hex-node--selected {
-  filter: drop-shadow(0 0 14px rgba(78, 205, 196, 0.85));
+.hex-inner {
+  position: absolute;
+  inset: 2.5px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hex-inner--available {
+  background: linear-gradient(160deg, rgba(8, 26, 42, 0.96), rgba(2, 10, 18, 0.98));
+}
+.hex-inner--complete {
+  background: linear-gradient(160deg, rgba(60, 46, 6, 0.95), rgba(14, 10, 2, 0.98));
+}
+.hex-glow--available {
+  filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.55));
+}
+.hex-glow--complete {
+  filter:
+    drop-shadow(0 0 8px rgba(255, 224, 102, 0.7)) drop-shadow(0 0 20px rgba(255, 224, 102, 0.35));
+}
+.hex-glow--selected {
+  filter:
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 26px rgba(0, 210, 255, 0.9));
+}
+.hex-breathe {
+  animation: hexBreath 2.8s ease-in-out infinite;
 }
