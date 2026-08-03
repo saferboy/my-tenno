@@ -1,14 +1,16 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMissionStore } from '../store/useMissionStore'
-import CompletionRing from '../components/CompletionRing'
-import ProgressBar from '../components/ProgressBar'
+import PlanetList from '../components/PlanetList'
+import OrbitalMap from '../components/OrbitalMap'
+import MissionInfoPanel from '../components/MissionInfoPanel'
 import { useT } from '../i18n/useT'
 
 // TDD 5.3: "Kategoriyalar bo'yicha ajratilgan checkbox'lar ro'yxati" -
 // warframe-items'da Void Fissures/Steel Path kabi o'yin-ichi teglar
 // mavjud emas (bular statik xususiyat emas), shuning uchun guruhlash
 // haqiqiy va barqaror ma'lumot bo'lgan planeta (systemName) bo'yicha
-// qilingan.
+// qilingan. Ko'rinish - reference dizayndagi orbital Star Chart
+// (chap: planeta ro'yxati, markaz: hexagon tugunlar, o'ng: tafsilot paneli).
 function MissionTracker(): React.JSX.Element {
   const loading = useMissionStore((s) => s.loading)
   const nodes = useMissionStore((s) => s.nodes)
@@ -16,6 +18,9 @@ function MissionTracker(): React.JSX.Element {
   const init = useMissionStore((s) => s.init)
   const toggleCompleted = useMissionStore((s) => s.toggleCompleted)
   const t = useT()
+
+  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
+  const [selectedNode, setSelectedNode] = useState<string | null>(null)
 
   useEffect(() => {
     init()
@@ -36,11 +41,32 @@ function MissionTracker(): React.JSX.Element {
       .sort((a, b) => a.planet.localeCompare(b.planet))
   }, [nodes])
 
+  useEffect(() => {
+    if (!selectedPlanet && groups.length) {
+      setSelectedPlanet(groups[0].planet)
+    }
+  }, [groups, selectedPlanet])
+
   const overallCompleted = useMemo(
     () => nodes.filter((n) => statusByNode[n.uniqueName]?.completed).length,
     [nodes, statusByNode]
   )
-  const overallPct = nodes.length ? overallCompleted / nodes.length : 0
+
+  const currentGroup = groups.find((g) => g.planet === selectedPlanet) ?? null
+  const currentNode = currentGroup?.nodes.find((n) => n.uniqueName === selectedNode) ?? null
+  const planetCompleted = currentGroup
+    ? currentGroup.nodes.filter((n) => statusByNode[n.uniqueName]?.completed).length
+    : 0
+
+  function handleSelectPlanet(planet: string): void {
+    setSelectedPlanet(planet)
+    setSelectedNode(null)
+  }
+
+  function handleToggle(): void {
+    if (!currentNode) return
+    toggleCompleted(currentNode.uniqueName, !statusByNode[currentNode.uniqueName]?.completed)
+  }
 
   if (loading) {
     return (
@@ -51,61 +77,38 @@ function MissionTracker(): React.JSX.Element {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-8">
-      <h1 className="font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
-        {t('sidebar.nav.missions')}
-      </h1>
+    <div className="flex min-h-0 flex-1">
+      <PlanetList
+        groups={groups}
+        statusByNode={statusByNode}
+        selectedPlanet={selectedPlanet}
+        onSelect={handleSelectPlanet}
+      />
 
-      <div className="surface-base rounded-lg p-4">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="font-mono text-[10px] tracking-widest text-[var(--color-t3)] uppercase">
-            {t('missionTracker.overallStarChart')}
-          </p>
-          <span className="font-mono text-xs text-[var(--color-tenno-cyan)]">
-            {overallCompleted}/{nodes.length} ({Math.round(overallPct * 100)}%)
-          </span>
-        </div>
-        <ProgressBar value={overallPct} />
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-8">
+        <h1 className="mb-6 font-display text-xl font-extrabold tracking-wide text-[var(--color-tenno-gold)] uppercase">
+          {t('sidebar.nav.missions')}
+        </h1>
+        {currentGroup && (
+          <OrbitalMap
+            planet={currentGroup.planet}
+            nodes={currentGroup.nodes}
+            statusByNode={statusByNode}
+            selectedNode={selectedNode}
+            onSelectNode={setSelectedNode}
+          />
+        )}
       </div>
 
-      {groups.map(({ planet, nodes: planetNodes }) => {
-        const completedCount = planetNodes.filter((n) => statusByNode[n.uniqueName]?.completed).length
-        const planetPct = planetNodes.length ? (completedCount / planetNodes.length) * 100 : 0
-        return (
-          <div key={planet} className="surface-base rounded-lg p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <h2 className="font-mono text-sm font-semibold tracking-wide text-[var(--color-tenno-cyan)] uppercase">
-                {planet}
-              </h2>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-[var(--color-t3)]">
-                  {completedCount}/{planetNodes.length}
-                </span>
-                <CompletionRing percent={planetPct} />
-              </div>
-            </div>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3">
-              {planetNodes.map((node) => {
-                const completed = Boolean(statusByNode[node.uniqueName]?.completed)
-                return (
-                  <li key={node.uniqueName}>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={completed}
-                        onChange={(e) => toggleCompleted(node.uniqueName, e.target.checked)}
-                      />
-                      <span className={completed ? 'text-[var(--color-t2)] line-through' : ''}>
-                        {node.name}
-                      </span>
-                    </label>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )
-      })}
+      <MissionInfoPanel
+        node={currentNode}
+        completed={Boolean(currentNode && statusByNode[currentNode.uniqueName]?.completed)}
+        onToggle={handleToggle}
+        planetCompleted={planetCompleted}
+        planetTotal={currentGroup?.nodes.length ?? 0}
+        overallCompleted={overallCompleted}
+        overallTotal={nodes.length}
+      />
     </div>
   )
 }

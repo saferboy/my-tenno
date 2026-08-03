@@ -8,6 +8,9 @@ export interface MissionNode {
   uniqueName: string
   name: string
   systemName: string
+  masteryReq?: number
+  minEnemyLevel?: number
+  maxEnemyLevel?: number
 }
 
 // TDD 5.3: Mission Tracker uchun star chart node'lari - Arsenal'ning
@@ -86,22 +89,34 @@ function fetchJson(url: string, redirectsLeft = 5): Promise<unknown> {
   })
 }
 
-function toNode(raw: { uniqueName: string; name: string; systemName: string }): MissionNode {
-  return { uniqueName: raw.uniqueName, name: raw.name, systemName: raw.systemName }
+interface RawNode {
+  uniqueName: string
+  name: string
+  systemName: string
+  masteryReq?: number
+  minEnemyLevel?: number
+  maxEnemyLevel?: number
+}
+
+function toNode(raw: RawNode): MissionNode {
+  return {
+    uniqueName: raw.uniqueName,
+    name: raw.name,
+    systemName: raw.systemName,
+    masteryReq: raw.masteryReq,
+    minEnemyLevel: raw.minEnemyLevel,
+    maxEnemyLevel: raw.maxEnemyLevel
+  }
 }
 
 function loadFromBundledPackage(): MissionNode[] {
   const options = { category: ['Node'] } as ConstructorParameters<typeof Items>[0]
-  const instance = new Items(options) as unknown as Array<{
-    uniqueName: string
-    name: string
-    systemName: string
-  }>
+  const instance = new Items(options) as unknown as RawNode[]
   return instance.map(toNode)
 }
 
 async function fetchAndCache(): Promise<void> {
-  const raw = (await fetchJson(RAW_URL)) as Array<{ uniqueName: string; name: string; systemName: string }>
+  const raw = (await fetchJson(RAW_URL)) as RawNode[]
   const nodes = raw.map(toNode)
   cachedNodes = nodes
   writeFileSync(getCacheFilePath(), JSON.stringify({ fetchedAt: Date.now(), nodes }))

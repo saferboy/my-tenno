@@ -10,7 +10,7 @@ function Pagination({ page, pageCount, onChange }: PaginationProps): React.JSX.E
   if (pageCount <= 1) return null
 
   const buttonClass =
-    't rounded-md border border-[var(--color-void-border)] px-2.5 py-1.5 text-xs text-[var(--color-t2)] hover:text-[var(--color-t1)] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-[var(--color-t2)]'
+    't rounded-md border border-[var(--color-void-border)] px-2.5 py-1.5 text-xs text-[var(--color-t2)] hover:border-[var(--color-tenno-cyan)]/40 hover:bg-[rgba(78,205,196,0.06)] hover:text-[var(--color-t1)] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-[var(--color-void-border)] disabled:hover:bg-transparent disabled:hover:text-[var(--color-t2)]'
 
   return (
     <div className="flex items-center justify-center gap-2 py-2">

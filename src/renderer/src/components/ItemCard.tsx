@@ -51,7 +51,7 @@ function ItemCard({ item, status, onClick }: ItemCardProps): React.JSX.Element {
           : { boxShadow: '0 0 0px #ffffff00' }
       }
       transition={{ duration: 0.9, ease: 'easeOut' }}
-      className={`t flex h-full w-full flex-col justify-between rounded-lg border bg-[var(--color-void-base)] p-3 text-left hover:bg-[var(--color-void-surface)] ${
+      className={`t hover-glow flex h-full w-full flex-col justify-between rounded-lg border bg-[var(--color-void-base)] p-3 text-left hover:bg-[var(--color-void-surface)] ${
         status?.sold ? 'opacity-50' : ''
       }`}
     >

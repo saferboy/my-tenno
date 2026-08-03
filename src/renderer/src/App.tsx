@@ -3,7 +3,7 @@ import { AnimatePresence, motion, type Variants } from 'framer-motion'
 import { useAppStore } from './store/useAppStore'
 import { useUserProfileStore } from './store/useUserProfileStore'
 import { useT } from './i18n/useT'
-import Sidebar, { type View } from './components/Sidebar'
+import TopNav, { type View } from './components/TopNav'
 import Dashboard from './views/Dashboard'
 import MyCollection from './views/MyCollection'
 import WeaponsPage from './views/WeaponsPage'
@@ -14,6 +14,7 @@ import QuestTimeline from './views/QuestTimeline'
 import NightwaveTracker from './views/NightwaveTracker'
 import RivenTracker from './views/RivenTracker'
 import CompanionFocus from './views/CompanionFocus'
+import ProfilePage from './views/ProfilePage'
 import Settings from './views/Settings'
 
 // TDD 6.4: sahifa o'zgarganda elementlar biroz "glitch" bo'lib paydo bo'ladi.
@@ -40,6 +41,7 @@ const VIEWS: Record<View, () => React.JSX.Element> = {
   nightwave: NightwaveTracker,
   riven: RivenTracker,
   companion: CompanionFocus,
+  profile: ProfilePage,
   settings: Settings
 }
 
@@ -75,8 +77,8 @@ function App(): React.JSX.Element {
   const ActiveView = VIEWS[view]
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar active={view} onNavigate={setView} />
+    <div className="flex h-screen flex-col overflow-hidden">
+      <TopNav active={view} onNavigate={setView} />
       <AnimatePresence mode="wait">
         <motion.div
           key={view}
@@ -84,7 +86,7 @@ function App(): React.JSX.Element {
           initial="initial"
           animate="animate"
           exit="exit"
-          className="flex flex-1"
+          className="flex min-h-0 min-w-0 flex-1"
         >
           <ActiveView />
         </motion.div>

@@ -16,7 +16,10 @@ function StatTile({ label, value, sub, accentColor = '#4ecdc4', icon: Icon }: St
   return (
     <div
       className="t flex flex-col gap-1 rounded-lg border bg-[var(--color-void-base)] p-3"
-      style={{ borderColor: hovered ? `${accentColor}4d` : 'var(--color-void-border)' }}
+      style={{
+        borderColor: hovered ? `${accentColor}4d` : 'var(--color-void-border)',
+        boxShadow: hovered ? `0 0 14px ${accentColor}1a` : 'none'
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -24,7 +27,13 @@ function StatTile({ label, value, sub, accentColor = '#4ecdc4', icon: Icon }: St
         <span className="min-w-0 font-mono text-[10px] tracking-wider text-[var(--color-t3)] uppercase break-words">
           {label}
         </span>
-        {Icon && <Icon size={12} className="shrink-0" style={{ color: `${accentColor}99` }} />}
+        {Icon && (
+          <Icon
+            size={12}
+            className="t shrink-0"
+            style={{ color: `${accentColor}99`, filter: hovered ? `drop-shadow(0 0 3px ${accentColor}80)` : 'none' }}
+          />
+        )}
       </div>
       <div className="font-display text-xl leading-none font-extrabold text-[var(--color-t1)]">{value}</div>
       {sub && <div className="mt-0.5 text-[10px] text-[var(--color-t3)]">{sub}</div>}

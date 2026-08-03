@@ -86,12 +86,16 @@ export type Locale = 'uz' | 'ru' | 'en'
 
 export interface UserProfile {
   masteryRank: number
+  credits: number
+  platinum: number
   locale: Locale
   updatedAt: string
 }
 
 export interface UserProfilePatch {
   masteryRank?: number
+  credits?: number
+  platinum?: number
   locale?: Locale
 }
 
