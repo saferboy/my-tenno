@@ -9,6 +9,7 @@ import MyCollection from './views/MyCollection'
 import WeaponsPage from './views/WeaponsPage'
 import WarframesPage from './views/WarframesPage'
 import WishlistPage from './views/WishlistPage'
+import FoundryPage from './views/FoundryPage'
 import MissionTracker from './views/MissionTracker'
 import QuestTimeline from './views/QuestTimeline'
 import NightwaveTracker from './views/NightwaveTracker'
@@ -36,6 +37,7 @@ const VIEWS: Record<View, () => React.JSX.Element> = {
   weapons: WeaponsPage,
   warframes: WarframesPage,
   wishlist: WishlistPage,
+  foundry: FoundryPage,
   missions: MissionTracker,
   quests: QuestTimeline,
   nightwave: NightwaveTracker,

@@ -21,3 +21,7 @@ export const WARFRAME_CATEGORIES = new Set(['Warframes'])
 // "Mening qurollarim" sahifasi uchun - egalik qilingan qurol/Warframe/
 // hamrohlarning barchasini bitta joyda ko'rsatish (Pets = Companion).
 export const MY_COLLECTION_CATEGORIES = new Set([...WEAPONS_PAGE_CATEGORIES, ...WARFRAME_CATEGORIES, 'Pets'])
+
+// Kuznitsa (Foundry) sahifasi uchun - Pets bu yerda yo'q, chunki
+// Kubrow/Kavat blueprint orqali emas, imprinting orqali olinadi.
+export const FOUNDRY_CATEGORIES = new Set([...WEAPONS_PAGE_CATEGORIES, ...WARFRAME_CATEGORIES])

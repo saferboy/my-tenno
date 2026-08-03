@@ -9,6 +9,7 @@ import {
   Milestone,
   Scroll,
   Zap,
+  Hammer,
   BookOpen,
   User,
   Coins,
@@ -26,6 +27,7 @@ export type View =
   | 'weapons'
   | 'warframes'
   | 'wishlist'
+  | 'foundry'
   | 'missions'
   | 'quests'
   | 'nightwave'
@@ -71,7 +73,8 @@ const TAB_GROUPS: TabGroup[] = [
       { view: 'weapons', labelKey: 'sidebar.nav.weapons', icon: Crosshair },
       { view: 'warframes', labelKey: 'sidebar.nav.warframes', icon: Shield },
       { view: 'companion', labelKey: 'sidebar.nav.companion', icon: Bot },
-      { view: 'riven', labelKey: 'sidebar.nav.riven', icon: Zap }
+      { view: 'riven', labelKey: 'sidebar.nav.riven', icon: Zap },
+      { view: 'foundry', labelKey: 'sidebar.nav.foundry', icon: Hammer }
     ]
   },
   {
