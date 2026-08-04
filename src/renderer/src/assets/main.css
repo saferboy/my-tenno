@@ -224,6 +224,19 @@ body.overlay-mode {
   mix-blend-mode: multiply;
 }
 
+/* "Yangiliklar" popup foni - Star Chart markaziy xaritasidagi kosmik
+   gradient + panjara retseptining qayta ishlatilishi (design handoff). */
+.whatsnew-bg {
+  background-image:
+    linear-gradient(rgba(0, 210, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.06) 1px, transparent 1px),
+    radial-gradient(ellipse 90% 80% at 50% 45%, #0a1a30, #030914 45%, #000 100%);
+  background-size:
+    48px 48px,
+    48px 48px,
+    100% 100%;
+}
+
 .glow-cyan {
   box-shadow:
     0 0 12px rgba(0, 210, 255, 0.2),

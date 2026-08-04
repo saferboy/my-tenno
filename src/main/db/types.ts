@@ -89,6 +89,7 @@ export interface UserProfile {
   credits: number
   platinum: number
   locale: Locale
+  lastSeenChangelogVersion: string
   updatedAt: string
 }
 
@@ -97,6 +98,7 @@ export interface UserProfilePatch {
   credits?: number
   platinum?: number
   locale?: Locale
+  lastSeenChangelogVersion?: string
 }
 
 export interface QuestStatus {

@@ -9,11 +9,13 @@ interface UserProfileState {
   credits: number
   platinum: number
   locale: Locale
+  lastSeenChangelogVersion: string
   init: () => Promise<void>
   setMasteryRank: (masteryRank: number) => Promise<void>
   setCredits: (credits: number) => Promise<void>
   setPlatinum: (platinum: number) => Promise<void>
   setLocale: (locale: Locale) => Promise<void>
+  setLastSeenChangelogVersion: (version: string) => Promise<void>
 }
 
 export const useUserProfileStore = create<UserProfileState>((set) => ({
@@ -22,6 +24,7 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
   credits: 0,
   platinum: 0,
   locale: 'uz',
+  lastSeenChangelogVersion: '',
 
   init: async () => {
     try {
@@ -31,6 +34,7 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
         credits: profile.credits,
         platinum: profile.platinum,
         locale: profile.locale,
+        lastSeenChangelogVersion: profile.lastSeenChangelogVersion,
         loading: false
       })
     } catch (error) {
@@ -70,6 +74,15 @@ export const useUserProfileStore = create<UserProfileState>((set) => ({
     try {
       const updated = await window.api.updateUserProfile({ locale })
       set({ locale: updated.locale })
+    } catch (error) {
+      useToastStore.getState().show(describeError(error))
+    }
+  },
+
+  setLastSeenChangelogVersion: async (lastSeenChangelogVersion) => {
+    try {
+      const updated = await window.api.updateUserProfile({ lastSeenChangelogVersion })
+      set({ lastSeenChangelogVersion: updated.lastSeenChangelogVersion })
     } catch (error) {
       useToastStore.getState().show(describeError(error))
     }

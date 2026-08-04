@@ -7,6 +7,7 @@ interface UserProfileRow {
   credits: number
   platinum: number
   locale: Locale
+  last_seen_changelog_version: string
   updated_at: string
 }
 
@@ -16,6 +17,7 @@ function toUserProfile(row: UserProfileRow): UserProfile {
     credits: row.credits,
     platinum: row.platinum,
     locale: row.locale,
+    lastSeenChangelogVersion: row.last_seen_changelog_version,
     updatedAt: row.updated_at
   }
 }
@@ -35,11 +37,12 @@ export function updateUserProfile(patch: UserProfilePatch): UserProfile {
     masteryRank: patch.masteryRank ?? existing.mastery_rank,
     credits: patch.credits ?? existing.credits,
     platinum: patch.platinum ?? existing.platinum,
-    locale: patch.locale ?? existing.locale
+    locale: patch.locale ?? existing.locale,
+    lastSeenChangelogVersion: patch.lastSeenChangelogVersion ?? existing.last_seen_changelog_version
   }
 
   db.prepare(
-    "UPDATE user_profile SET mastery_rank = @masteryRank, credits = @credits, platinum = @platinum, locale = @locale, updated_at = datetime('now') WHERE id = 1"
+    "UPDATE user_profile SET mastery_rank = @masteryRank, credits = @credits, platinum = @platinum, locale = @locale, last_seen_changelog_version = @lastSeenChangelogVersion, updated_at = datetime('now') WHERE id = 1"
   ).run(merged)
 
   const row = db.prepare('SELECT * FROM user_profile WHERE id = 1').get() as UserProfileRow

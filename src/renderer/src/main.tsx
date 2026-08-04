@@ -7,6 +7,7 @@ import Overlay from './Overlay'
 import ErrorBoundary from './components/ErrorBoundary'
 import Toast from './components/Toast'
 import UpdateBanner from './components/UpdateBanner'
+import WhatsNewModal from './components/WhatsNewModal'
 
 const isOverlay = new URLSearchParams(window.location.search).get('view') === 'overlay'
 if (isOverlay) {
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
           <App />
           <Toast />
           <UpdateBanner />
+          <WhatsNewModal />
         </>
       )}
     </ErrorBoundary>

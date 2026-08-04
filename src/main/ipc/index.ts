@@ -1,4 +1,4 @@
-import { dialog, ipcMain, type IpcMainInvokeEvent } from 'electron'
+import { app, dialog, ipcMain, type IpcMainInvokeEvent } from 'electron'
 import { writeFileSync } from 'fs'
 import { closeDb, getDb, getDbPath } from '../db'
 import { createBackup, listBackups, restoreBackup } from '../db/backup'
@@ -50,6 +50,10 @@ function handle(
 // kanallar orqali ushlanadi - preload orqali oldindan belgilangan
 // metodlarga mos.
 export function registerIpcHandlers(): void {
+  handle('app:getVersion', () => {
+    return app.getVersion()
+  })
+
   handle('masterData:get', () => {
     return getMasterData()
   })

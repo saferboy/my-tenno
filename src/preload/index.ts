@@ -27,6 +27,7 @@ import type { UpdaterEvent } from '../main/updater'
 // TDD 7.1: faqat oldindan belgilangan, cheklangan metodlar ochiladi - to'liq
 // ipcRenderer obyekti hech qachon renderer'ga uzatilmaydi.
 const api = {
+  getAppVersion: (): Promise<string> => ipcRenderer.invoke('app:getVersion'),
   getMasterData: (): Promise<MasterDataPayload> => ipcRenderer.invoke('masterData:get'),
   getSchemaVersion: (): Promise<number> => ipcRenderer.invoke('db:getSchemaVersion'),
   getItemStatuses: (): Promise<ItemStatus[]> => ipcRenderer.invoke('itemStatus:getAll'),
