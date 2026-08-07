@@ -10,6 +10,14 @@ export interface ChangelogEntry {
 // foydalanuvchi hali ko'rmagan bo'lsa ko'rsatadi (user_profile.last_seen_changelog_version).
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.5.3',
+    highlights: {
+      uz: ["Tuzatildi: buyum tafsilotlari paneli ba'zan yuqori navigatsiya panelining orqasida ko'rinib qolar edi."],
+      ru: ['Исправлено: панель деталей предмета иногда отображалась позади верхней панели навигации.'],
+      en: ['Fixed: the item details drawer could render behind the top navigation bar.']
+    }
+  },
+  {
     version: '1.5.2',
     highlights: {
       uz: [
