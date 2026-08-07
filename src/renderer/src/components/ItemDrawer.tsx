@@ -33,7 +33,7 @@ function ItemDrawer({
   return createPortal(
     <>
       <motion.div
-        className="fixed inset-0 bg-black/60"
+        className="fixed inset-0 z-40 bg-black/60"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -41,7 +41,7 @@ function ItemDrawer({
         onClick={onClose}
       />
       <motion.aside
-        className="fixed top-0 right-0 flex h-full w-80 flex-col gap-4 rounded-l-lg border-l border-[var(--color-void-border)] bg-[var(--color-void-base)] p-6 shadow-2xl"
+        className="fixed top-0 right-0 z-40 flex h-full w-80 flex-col gap-4 rounded-l-lg border-l border-[var(--color-void-border)] bg-[var(--color-void-base)] p-6 shadow-2xl"
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
